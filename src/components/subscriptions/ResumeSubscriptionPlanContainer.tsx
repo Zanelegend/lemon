@@ -28,7 +28,7 @@ function ResumeSubscriptionPlanContainer(
 
       <Modal
         closeButton={false}
-        heading={`Unsubscribe from plan`}
+        heading={<Trans i18nKey={'subscription:resumeSubscription'} />}
         isOpen={resumeRequested}
         setIsOpen={setResumeRequested}
       >

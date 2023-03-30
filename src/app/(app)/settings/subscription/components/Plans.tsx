@@ -55,12 +55,12 @@ const Plans: React.FC = () => {
                   currentPlanVariantId={subscription.data.variantId}
                 />
 
-                <UnsubscribeSubscriptionPlanContainer
-                  subscriptionId={subscriptionId}
-                />
-
                 <UpdatePaymentMethodLink
                   href={subscription.data.updatePaymentMethodUrl}
+                />
+
+                <UnsubscribeSubscriptionPlanContainer
+                  subscriptionId={subscriptionId}
                 />
               </div>
             );
@@ -79,7 +79,7 @@ function UpdatePaymentMethodLink(
   }>
 ) {
   return (
-    <Button color={'transparent'} href={props.href}>
+    <Button size={'small'} color={'secondary'} href={props.href}>
       <Trans i18nKey={'subscription:updatePaymentMethod'} />
     </Button>
   );

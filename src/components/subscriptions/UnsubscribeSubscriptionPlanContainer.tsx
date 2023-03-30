@@ -19,6 +19,7 @@ function UnsubscribeSubscriptionPlanContainer(
   return (
     <>
       <Button
+        size={'small'}
         color={'transparent'}
         onClick={() => setUnsubscribeRequested(true)}
       >
@@ -27,7 +28,7 @@ function UnsubscribeSubscriptionPlanContainer(
 
       <Modal
         closeButton={false}
-        heading={`Unsubscribe from plan`}
+        heading={<Trans i18nKey={'subscription:cancelSubscription'} />}
         isOpen={unsubscribeRequested}
         setIsOpen={setUnsubscribeRequested}
       >

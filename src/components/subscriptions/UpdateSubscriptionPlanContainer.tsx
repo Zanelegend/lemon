@@ -31,7 +31,7 @@ function UpdateSubscriptionPlanContainer(
     <>
       <Dialog open={updateRequested} onOpenChange={setUpdateRequested}>
         <DialogTrigger asChild>
-          <Button variant={'flat'}>
+          <Button size={'small'} variant={'flat'}>
             <Trans i18nKey={'subscription:switchPlan'} />
           </Button>
         </DialogTrigger>
