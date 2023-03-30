@@ -21,27 +21,27 @@ function SubscriptionStatusBadge({
       type = 'success';
       break;
 
-    case 'trialing':
+    case 'on_trial':
       label = 'subscription:status.trialing.label';
       description = 'subscription:status.trialing.description';
       type = 'success';
       break;
 
-    case 'canceled':
+    case 'cancelled':
       label = 'subscription:status.canceled.label';
       description = 'subscription:status.canceled.description';
       type = 'warn';
       break;
 
-    case 'incomplete':
-      label = 'subscription:status.incomplete.label';
-      description = 'subscription:status.incomplete.description';
-      type = 'warn';
-      break;
-
-    case 'incomplete_expired':
+    case 'expired':
       label = 'subscription:status.incomplete_expired.label';
       description = 'subscription:status.incomplete_expired.description';
+      type = 'error';
+      break;
+
+    case 'paused':
+      label = 'subscription:status.paused.label';
+      description = 'subscription:status.paused.description';
       type = 'error';
       break;
 
@@ -85,7 +85,12 @@ function getDates(subscription: Maybe<OrganizationSubscription>) {
   }
 
   return {
-    endDate: new Date(subscription.periodEndsAt).toDateString(),
+    endDate: subscription.endsAt
+      ? new Date(subscription.endsAt).toDateString()
+      : null,
+    renewDate: subscription.renewsAt
+      ? new Date(subscription.renewsAt).toDateString()
+      : null,
     trialEndDate: subscription.trialEndsAt
       ? new Date(subscription.trialEndsAt).toDateString()
       : null,

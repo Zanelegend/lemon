@@ -5,19 +5,16 @@ import React from 'react';
 import type Organization from '~/lib/organizations/types/organization';
 import { canChangeBilling } from '~/lib/organizations/permissions';
 
-import If from '~/core/ui/If';
 import Trans from '~/core/ui/Trans';
 import Alert from '~/core/ui/Alert';
 
 import PricingTable from '~/components/PricingTable';
 import IfHasPermissions from '~/app/(app)/components/IfHasPermissions';
 import CheckoutRedirectButton from '~/app/(app)/settings/subscription/components/CheckoutRedirectButton';
-import BillingPortalRedirectButton from '~/app/(app)/settings/subscription/components/BillingRedirectButton';
 
 const PlanSelectionForm: React.FCC<{
   organization: WithId<Organization>;
-  customerId: Maybe<string>;
-}> = ({ organization, customerId }) => {
+}> = ({ organization }) => {
   return (
     <div className={'flex flex-col space-y-6'}>
       <IfHasPermissions
@@ -30,8 +27,7 @@ const PlanSelectionForm: React.FCC<{
               return (
                 <CheckoutRedirectButton
                   organizationId={organization.id}
-                  customerId={customerId}
-                  stripePriceId={props.stripePriceId}
+                  variantId={props.variantId}
                   recommended={props.recommended}
                 >
                   <Trans
@@ -42,18 +38,6 @@ const PlanSelectionForm: React.FCC<{
               );
             }}
           />
-
-          <If condition={customerId}>
-            <div className={'flex flex-col space-y-2'}>
-              <BillingPortalRedirectButton customerId={customerId as string}>
-                <Trans i18nKey={'subscription:manageBilling'} />
-              </BillingPortalRedirectButton>
-
-              <span className={'text-xs text-gray-500 dark:text-gray-400'}>
-                <Trans i18nKey={'subscription:manageBillingDescription'} />
-              </span>
-            </div>
-          </If>
         </div>
       </IfHasPermissions>
     </div>

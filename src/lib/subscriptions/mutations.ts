@@ -1,16 +1,16 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Stripe } from 'stripe';
 
 import { SUBSCRIPTIONS_TABLE } from '~/lib/db-tables';
 import type { Database } from '../../database.types';
 
-type Client = SupabaseClient<Database>;
+import { OrganizationSubscription } from '~/lib/organizations/types/organization-subscription';
 
+type Client = SupabaseClient<Database>;
 type SubscriptionRow = Database['public']['Tables']['subscriptions']['Row'];
 
 export async function addSubscription(
   client: Client,
-  subscription: Stripe.Subscription
+  subscription: OrganizationSubscription
 ) {
   const data = subscriptionMapper(subscription);
 
@@ -46,7 +46,7 @@ export async function deleteSubscription(
  */
 export async function updateSubscriptionById(
   client: Client,
-  subscription: Stripe.Subscription
+  subscription: OrganizationSubscription
 ) {
   return getSubscriptionsTable(client)
     .update(subscriptionMapper(subscription))
@@ -57,43 +57,26 @@ export async function updateSubscriptionById(
 }
 
 function subscriptionMapper(
-  subscription: Stripe.Subscription
+  subscription: OrganizationSubscription
 ): SubscriptionRow {
-  const lineItem = subscription.items.data[0];
-  const price = lineItem.price;
-  const priceId = price.id;
-  const interval = price?.recurring?.interval ?? null;
-  const intervalCount = price?.recurring?.interval_count ?? null;
+  const variantId = subscription.id;
 
   const row: Partial<SubscriptionRow> = {
-    price_id: priceId,
-    currency: subscription.currency,
-    status: subscription.status ?? 'incomplete',
-    interval,
-    interval_count: intervalCount,
-    cancel_at_period_end: subscription.cancel_at_period_end ?? false,
-    created_at: subscription.created ? toISO(subscription.created) : undefined,
-    period_starts_at: subscription.current_period_start
-      ? toISO(subscription.current_period_start)
-      : undefined,
-    period_ends_at: subscription.current_period_end
-      ? toISO(subscription.current_period_end)
-      : undefined,
+    variant_id: variantId,
+    status: subscription.status,
+    billing_anchor: subscription.billingAnchor,
+    cancel_at_period_end: subscription.cancelAtPeriodEnd ?? false,
+    update_payment_method_url: subscription.updatePaymentMethodUrl,
+    renews_at: subscription.renewsAt ? subscription.renewsAt : undefined,
+    created_at: subscription.createdAt ? subscription.createdAt : undefined,
+    ends_at: subscription.endsAt,
   };
 
-  if (subscription.trial_start) {
-    row.trial_starts_at = toISO(subscription.trial_start);
-  }
-
-  if (subscription.trial_end) {
-    row.trial_ends_at = toISO(subscription.trial_end);
+  if (subscription.trialEndsAt) {
+    row.trial_ends_at = subscription.trialEndsAt;
   }
 
   return row as SubscriptionRow;
-}
-
-function toISO(timestamp: number) {
-  return new Date(timestamp * 1000).toISOString();
 }
 
 function getSubscriptionsTable(client: Client) {

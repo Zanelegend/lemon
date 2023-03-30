@@ -1,11 +1,10 @@
 create type subscription_status as ENUM (
   'active',
-  'trialing',
+  'on_trial',
   'past_due',
-  'canceled',
+  'cancelled',
   'unpaid',
-  'incomplete',
-  'incomplete_expired',
+  'expired',
   'paused'
 );
 
@@ -18,18 +17,17 @@ create table users (
 );
 
 create table subscriptions (
-  id text not null primary key,
-  price_id text not null,
+  id bigint not null primary key,
+  variant_id bigint not null,
   status subscription_status not null,
   cancel_at_period_end bool not null,
-  currency text,
-  interval text,
-  interval_count int,
+  billing_anchor int,
   created_at timestamptz,
-  period_starts_at timestamptz,
-  period_ends_at timestamptz,
+  ends_at timestamptz,
+  renews_at timestamptz,
   trial_starts_at timestamptz,
-  trial_ends_at timestamptz
+  trial_ends_at timestamptz,
+  update_payment_method_url text
 );
 
 create table organizations (
@@ -41,8 +39,8 @@ create table organizations (
 
 create table organizations_subscriptions (
   organization_id bigint not null references public.organizations (id) on delete cascade,
-  subscription_id text unique references public.subscriptions (id) on delete set null,
-  customer_id text not null unique,
+  subscription_id bigint unique references public.subscriptions (id) on delete set null,
+  customer_id bigint not null unique,
   primary key (organization_id)
 );
 

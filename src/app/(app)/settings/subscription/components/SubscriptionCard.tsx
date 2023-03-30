@@ -16,13 +16,16 @@ import configuration from '~/configuration';
 const SubscriptionCard: React.FC<{
   subscription: OrganizationSubscription;
 }> = ({ subscription }) => {
-  const details = useSubscriptionDetails(subscription.priceId);
+  const details = useSubscriptionDetails(subscription.variantId);
   const cancelAtPeriodEnd = subscription.cancelAtPeriodEnd;
   const isActive = subscription.status === 'active';
 
   const dates = useMemo(() => {
     return {
-      endDate: new Date(subscription.periodEndsAt).toDateString(),
+      endDate: subscription.endsAt
+        ? new Date(subscription.endsAt).toDateString()
+        : null,
+      renewDate: new Date(subscription.renewsAt).toDateString(),
       trialEndDate: subscription.trialEndsAt
         ? new Date(subscription.trialEndsAt).toDateString()
         : null,
@@ -77,7 +80,8 @@ function RenewStatusDescription(
   props: React.PropsWithChildren<{
     cancelAtPeriodEnd: boolean;
     dates: {
-      endDate: string;
+      endDate: string | null;
+      renewDate: string;
       trialEndDate: string | null;
     };
   }>
@@ -110,52 +114,21 @@ function RenewStatusDescription(
 }
 
 function getProducts() {
-  if (!configuration.production) {
-    /**
-     * This is read-only, so we also include the testing plans
-     * so we can test them.
-     *
-     * In production, of course, they should never show up
-     */
-    return [...configuration.stripe.products, ...getTestingProducts()];
-  }
-
-  return configuration.stripe.products;
+  return configuration.subscriptions.products;
 }
 
-/**
- * @name getTestingProducts
- * @description These plans are added for testing-purposes only
- */
-function getTestingProducts() {
-  return [
-    {
-      name: 'Testing Plan',
-      description: 'Description of your Testing plan',
-      features: [],
-      plans: [
-        {
-          price: '$999/year',
-          name: 'Yearly',
-          stripePriceId: 'price_1LFibmKr5l4rxPx3wWcSO8UY',
-        },
-      ],
-    },
-  ];
-}
-
-function useSubscriptionDetails(priceId: string) {
+function useSubscriptionDetails(variantId: number) {
   const products = useMemo(() => getProducts(), []);
 
   return useMemo(() => {
     for (const product of products) {
       for (const plan of product.plans) {
-        if (plan.stripePriceId === priceId) {
+        if (plan.variantId === variantId) {
           return { plan, product };
         }
       }
     }
-  }, [products, priceId]);
+  }, [products, variantId]);
 }
 
 export default SubscriptionCard;

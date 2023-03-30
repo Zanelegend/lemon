@@ -1,20 +1,23 @@
-import type { Stripe } from 'stripe';
+export type OrganizationSubscriptionStatus =
+  | 'on_trial'
+  | 'active'
+  | 'paused'
+  | 'past_due'
+  | 'unpaid'
+  | 'cancelled'
+  | 'expired';
 
 export interface OrganizationSubscription {
-  id: string;
+  id: number;
+  variantId: number;
 
-  priceId: string;
-
-  status: Stripe.Subscription.Status;
+  status: OrganizationSubscriptionStatus;
   cancelAtPeriodEnd: boolean;
-  currency: string | null;
-
-  interval: string | null;
-  intervalCount: number | null;
+  billingAnchor: number;
 
   createdAt: string;
-  periodStartsAt: string;
-  periodEndsAt: string;
-  trialStartsAt: string | null;
+  endsAt: string | null;
+  renewsAt: string;
   trialEndsAt: string | null;
+  updatePaymentMethodUrl: string;
 }

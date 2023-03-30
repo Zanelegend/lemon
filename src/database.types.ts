@@ -85,63 +85,60 @@ export interface Database {
       }
       organizations_subscriptions: {
         Row: {
-          customer_id: string
+          customer_id: number
           organization_id: number
-          subscription_id: string | null
+          subscription_id: number | null
         }
         Insert: {
-          customer_id: string
+          customer_id: number
           organization_id: number
-          subscription_id?: string | null
+          subscription_id?: number | null
         }
         Update: {
-          customer_id?: string
+          customer_id?: number
           organization_id?: number
-          subscription_id?: string | null
+          subscription_id?: number | null
         }
       }
       subscriptions: {
         Row: {
+          billing_anchor: number | null
           cancel_at_period_end: boolean
           created_at: string | null
-          currency: string | null
-          id: string
-          interval: string | null
-          interval_count: number | null
-          period_ends_at: string | null
-          period_starts_at: string | null
-          price_id: string
+          ends_at: string | null
+          id: number
+          renews_at: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at: string | null
           trial_starts_at: string | null
+          update_payment_method_url: string | null
+          variant_id: number
         }
         Insert: {
+          billing_anchor?: number | null
           cancel_at_period_end: boolean
           created_at?: string | null
-          currency?: string | null
-          id: string
-          interval?: string | null
-          interval_count?: number | null
-          period_ends_at?: string | null
-          period_starts_at?: string | null
-          price_id: string
+          ends_at?: string | null
+          id: number
+          renews_at?: string | null
           status: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string | null
           trial_starts_at?: string | null
+          update_payment_method_url?: string | null
+          variant_id: number
         }
         Update: {
+          billing_anchor?: number | null
           cancel_at_period_end?: boolean
           created_at?: string | null
-          currency?: string | null
-          id?: string
-          interval?: string | null
-          interval_count?: number | null
-          period_ends_at?: string | null
-          period_starts_at?: string | null
-          price_id?: string
+          ends_at?: string | null
+          id?: number
+          renews_at?: string | null
           status?: Database["public"]["Enums"]["subscription_status"]
           trial_ends_at?: string | null
           trial_starts_at?: string | null
+          update_payment_method_url?: string | null
+          variant_id?: number
         }
       }
       users: {
@@ -227,12 +224,11 @@ export interface Database {
     Enums: {
       subscription_status:
         | "active"
-        | "trialing"
+        | "on_trial"
         | "past_due"
-        | "canceled"
+        | "cancelled"
         | "unpaid"
-        | "incomplete"
-        | "incomplete_expired"
+        | "expired"
         | "paused"
     }
     CompositeTypes: {
@@ -243,7 +239,10 @@ export interface Database {
     Tables: {
       buckets: {
         Row: {
+          allowed_mime_types: string[] | null
+          avif_autodetection: boolean | null
           created_at: string | null
+          file_size_limit: number | null
           id: string
           name: string
           owner: string | null
@@ -251,7 +250,10 @@ export interface Database {
           updated_at: string | null
         }
         Insert: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id: string
           name: string
           owner?: string | null
@@ -259,7 +261,10 @@ export interface Database {
           updated_at?: string | null
         }
         Update: {
+          allowed_mime_types?: string[] | null
+          avif_autodetection?: boolean | null
           created_at?: string | null
+          file_size_limit?: number | null
           id?: string
           name?: string
           owner?: string | null

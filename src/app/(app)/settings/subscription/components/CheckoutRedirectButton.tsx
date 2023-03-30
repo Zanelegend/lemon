@@ -13,10 +13,9 @@ const CHECKOUT_SESSION_API_ENDPOINT = configuration.paths.api.checkout;
 
 const CheckoutRedirectButton: React.FCC<{
   disabled?: boolean;
-  stripePriceId?: string;
+  variantId?: number;
   recommended?: boolean;
   organizationId: Maybe<number>;
-  customerId: Maybe<string>;
 }> = ({ children, ...props }) => {
   return (
     <form
@@ -25,9 +24,8 @@ const CheckoutRedirectButton: React.FCC<{
       method="POST"
     >
       <CheckoutFormData
-        customerId={props.customerId}
         organizationId={props.organizationId}
-        priceId={props.stripePriceId}
+        variantId={props.variantId}
       />
 
       <Button
@@ -53,8 +51,7 @@ export default CheckoutRedirectButton;
 function CheckoutFormData(
   props: React.PropsWithChildren<{
     organizationId: Maybe<number>;
-    priceId: Maybe<string>;
-    customerId: Maybe<string>;
+    variantId: Maybe<number>;
   }>
 ) {
   const csrfToken = useCsrfToken();
@@ -69,13 +66,7 @@ function CheckoutFormData(
 
       <input type="hidden" name={'csrf_token'} defaultValue={csrfToken} />
       <input type="hidden" name={'returnUrl'} defaultValue={getReturnUrl()} />
-      <input type="hidden" name={'priceId'} defaultValue={props.priceId} />
-
-      <input
-        type="hidden"
-        name={'customerId'}
-        defaultValue={props.customerId}
-      />
+      <input type="hidden" name={'variantId'} defaultValue={props.variantId} />
     </>
   );
 }

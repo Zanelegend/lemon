@@ -53,14 +53,8 @@ export default defineConfig({
 });
 
 function getExcludeSpecPattern() {
-  const enableStripeTests = process.env.ENABLE_STRIPE_TESTING === 'true';
   const enableThemeTests = configuration.enableThemeSwitcher;
-
   const excludePatterns = [];
-
-  if (!enableStripeTests) {
-    excludePatterns.push('**/stripe/*');
-  }
 
   if (!enableThemeTests) {
     excludePatterns.push('**/theme.cy.ts');
@@ -88,7 +82,6 @@ function resetDb() {
 function getEnv() {
   const env = process.env;
 
-  const STRIPE_WEBHOOK_SECRET = env.STRIPE_WEBHOOK_SECRET;
   const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPABASE_ANON_KEY = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -96,7 +89,6 @@ function getEnv() {
   const USER_PASSWORD = env.USER_PASSWORD;
 
   return {
-    STRIPE_WEBHOOK_SECRET,
     SUPABASE_URL,
     SUPABASE_ANON_KEY,
     USER_EMAIL,

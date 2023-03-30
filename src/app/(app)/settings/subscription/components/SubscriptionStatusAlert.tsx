@@ -7,7 +7,8 @@ function SubscriptionStatusAlert(
   props: React.PropsWithChildren<{
     subscription: OrganizationSubscription;
     values: {
-      endDate: string;
+      renewDate: string;
+      endDate: string | null;
       trialEndDate: string | null;
     };
   }>
@@ -24,22 +25,22 @@ function SubscriptionStatusAlert(
       message = 'subscription:status.active.description';
       type = 'success';
       break;
-    case 'trialing':
+    case 'on_trial':
       heading = 'subscription:status.trialing.heading';
       message = 'subscription:status.trialing.description';
       type = 'success';
       break;
-    case 'canceled':
+    case 'cancelled':
       heading = 'subscription:status.canceled.heading';
       message = 'subscription:status.canceled.description';
       type = 'warn';
       break;
-    case 'incomplete':
-      heading = 'subscription:status.incomplete.heading';
-      message = 'subscription:status.incomplete.description';
+    case 'paused':
+      heading = 'subscription:status.paused.heading';
+      message = 'subscription:status.paused.description';
       type = 'warn';
       break;
-    case 'incomplete_expired':
+    case 'expired':
       heading = 'subscription:status.incomplete_expired.heading';
       message = 'subscription:status.incomplete_expired.description';
       type = 'error';

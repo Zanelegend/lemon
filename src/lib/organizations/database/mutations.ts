@@ -52,8 +52,8 @@ export function setOrganizationSubscriptionData(
   client: Client,
   props: {
     organizationId: number;
-    customerId: string;
-    subscriptionId: string;
+    customerId: number;
+    subscriptionId: number;
   }
 ) {
   const { customerId, organizationId, subscriptionId } = props;

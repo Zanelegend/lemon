@@ -47,8 +47,7 @@ const configuration = {
       password: '/settings/profile/password',
     },
     api: {
-      checkout: `/api/stripe/checkout`,
-      billingPortal: `/api/stripe/portal`,
+      checkout: `/api/ls/checkout`,
       organizations: {
         create: `/api/organizations`,
         current: `/api/organizations/[organization]/current`,
@@ -68,10 +67,11 @@ const configuration = {
   sentry: {
     dsn: process.env.SENTRY_DSN,
   },
-  stripe: {
+  subscriptions: {
     products: [
       {
         name: 'Basic',
+        productId: 57713,
         description: 'Description of your Basic plan',
         badge: `Up to 20 users`,
         features: [
@@ -84,14 +84,12 @@ const configuration = {
           {
             name: 'Monthly',
             price: '$9',
-            stripePriceId: 'price_1LfXGaI1i3VnbZTq7l3VgZNa',
-            trialPeriodDays: 0,
+            variantId: 55476,
           },
           {
             name: 'Yearly',
             price: '$90',
-            stripePriceId: 'basic-plan-yr',
-            trialPeriodDays: 0,
+            variantId: 55512,
           },
         ],
       },
@@ -99,6 +97,7 @@ const configuration = {
         name: 'Pro',
         badge: `Most Popular`,
         recommended: true,
+        productId: 57719,
         description: 'Description of your Pro plan',
         features: [
           'Advanced Reporting',
@@ -110,13 +109,13 @@ const configuration = {
           {
             name: 'Monthly',
             price: '$29',
-            stripePriceId: 'pro-plan-mth',
+            variantId: 55483,
             trialPeriodDays: 0,
           },
           {
             name: 'Yearly',
             price: '$200',
-            stripePriceId: 'pro-plan-yr',
+            variantId: 55482,
             trialPeriodDays: 0,
           },
         ],
@@ -135,8 +134,7 @@ const configuration = {
           {
             name: '',
             price: 'Contact us',
-            stripePriceId: '',
-            trialPeriodDays: 0,
+            variantId: 0,
             label: `Contact us`,
             href: `/contact`,
           },

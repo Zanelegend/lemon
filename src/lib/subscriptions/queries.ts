@@ -18,14 +18,12 @@ export async function getOrganizationSubscription(
       `
         id,
         status,
-        currency,
-        interval,
-        intervalCount: interval_count,
-        priceId: price_id,
-        subscriptionId: subscription_id,
+        updatePaymentMethodUrl: update_payment_method_url,
+        billingAnchor: billing_anchor,
+        variantId: variant_id,
         createdAt: created_at,
-        periodStartsAt: period_starts_at,
-        periodEndsAt: period_ends_at,
+        endsAt: ends_at,
+        renewsAt: renews_at,
         trialStartsAt: trial_starts_at,
         trialEndsAt: trial_ends_at
       `
@@ -78,5 +76,5 @@ export async function getOrganizationSubscriptionActive(
     return false;
   }
 
-  return status === 'active' || status === 'trialing';
+  return status === 'active' || status === 'on_trial';
 }

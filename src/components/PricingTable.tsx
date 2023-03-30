@@ -13,7 +13,7 @@ import If from '~/core/ui/If';
 import configuration from '~/configuration';
 
 interface CheckoutButtonProps {
-  readonly stripePriceId?: string;
+  readonly variantId?: number;
   readonly recommended?: boolean;
 }
 
@@ -28,16 +28,16 @@ interface PricingItemProps {
   };
   plan: {
     name: string;
-    stripePriceId?: string;
+    variantId?: number;
     price: string;
     label?: string;
     href?: string;
   };
 }
 
-const STRIPE_PRODUCTS = configuration.stripe.products;
+const LEMONS_SQUEEZY_PRODUCTS = configuration.subscriptions.products;
 
-const STRIPE_PLANS = STRIPE_PRODUCTS.reduce<string[]>((acc, product) => {
+const PLANS = LEMONS_SQUEEZY_PRODUCTS.reduce<string[]>((acc, product) => {
   product.plans.forEach((plan) => {
     if (plan.name && !acc.includes(plan.name)) {
       acc.push(plan.name);
@@ -52,14 +52,14 @@ function PricingTable(
     CheckoutButton?: React.ComponentType<CheckoutButtonProps>;
   }>
 ) {
-  const [planVariant, setPlanVariant] = useState<string>(STRIPE_PLANS[0]);
+  const [planVariant, setPlanVariant] = useState<string>(PLANS[0]);
 
   return (
     <>
       <div className={'flex flex-col space-y-12'}>
         <div className={'flex justify-center'}>
           <PlansSwitcher
-            plans={STRIPE_PLANS}
+            plans={PLANS}
             plan={planVariant}
             setPlan={setPlanVariant}
           />
@@ -71,7 +71,7 @@ function PricingTable(
             ' justify-center lg:flex-row lg:space-x-4 xl:space-x-6'
           }
         >
-          {STRIPE_PRODUCTS.map((product) => {
+          {LEMONS_SQUEEZY_PRODUCTS.map((product) => {
             const plan =
               product.plans.find((item) => item.name === planVariant) ??
               product.plans[0];
@@ -79,7 +79,7 @@ function PricingTable(
             return (
               <PricingItem
                 selectable
-                key={plan.stripePriceId ?? plan.name}
+                key={plan.variantId ?? plan.name}
                 plan={plan}
                 product={product}
                 CheckoutButton={props.CheckoutButton}
@@ -132,7 +132,7 @@ function PricingItem(
           <If condition={props.product.badge}>
             <span
               className={classNames(
-                `rounded-md py-1 px-2 text-xs font-medium`,
+                `rounded-md px-2 py-1 text-xs font-medium`,
                 {
                   ['bg-primary-700 text-primary-contrast']: recommended,
                   ['bg-gray-50 text-gray-500 dark:bg-black-300' +
@@ -199,7 +199,7 @@ function PricingItem(
           {(CheckoutButton) => (
             <CheckoutButton
               recommended={recommended}
-              stripePriceId={props.plan.stripePriceId}
+              variantId={props.plan.variantId}
             />
           )}
         </If>
@@ -289,7 +289,8 @@ function DefaultCheckoutButton(
 ) {
   const linkHref =
     props.plan.href ??
-    `${configuration.paths.signUp}?utm_source=${props.plan.stripePriceId}`;
+    `${configuration.paths.signUp}?utm_source=${props.plan.variantId}`;
+
   const label = props.plan.label ?? 'common:getStarted';
 
   return (

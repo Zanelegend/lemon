@@ -3,14 +3,17 @@
 import useCurrentOrganization from '~/lib/organizations/hooks/use-current-organization';
 
 import If from '~/core/ui/If';
-import Trans from '~/core/ui/Trans';
-
 import SubscriptionCard from './SubscriptionCard';
 
 import { canChangeBilling } from '~/lib/organizations/permissions';
 import PlanSelectionForm from '~/app/(app)/settings/subscription/components/PlanSelectionForm';
 import IfHasPermissions from '~/app/(app)/components/IfHasPermissions';
-import BillingPortalRedirectButton from '~/app/(app)/settings/subscription/components/BillingRedirectButton';
+
+import UnsubscribeSubscriptionPlanContainer from '~/components/subscriptions/UnsubscribeSubscriptionPlanContainer';
+import ResumeSubscriptionPlanContainer from '~/components/subscriptions/ResumeSubscriptionPlanContainer';
+import UpdateSubscriptionPlanContainer from '~/components/subscriptions/UpdateSubscriptionPlanContainer';
+import Trans from '~/core/ui/Trans';
+import Button from '~/core/ui/Button';
 
 const Plans: React.FC = () => {
   const organization = useCurrentOrganization();
@@ -19,30 +22,49 @@ const Plans: React.FC = () => {
     return null;
   }
 
-  const customerId = organization.subscription?.customerId;
   const subscription = organization.subscription?.data;
 
   if (!subscription) {
-    return (
-      <PlanSelectionForm customerId={customerId} organization={organization} />
-    );
+    return <PlanSelectionForm organization={organization} />;
   }
 
   return (
-    <div className={'flex flex-col space-y-4'}>
+    <div className={'flex flex-col space-y-6'}>
       <SubscriptionCard subscription={subscription} />
 
       <IfHasPermissions condition={canChangeBilling}>
-        <If condition={customerId}>
-          <div className={'flex flex-col space-y-2'}>
-            <BillingPortalRedirectButton customerId={customerId as string}>
-              <Trans i18nKey={'subscription:manageBilling'} />
-            </BillingPortalRedirectButton>
+        <If condition={organization.subscription}>
+          {(subscription) => {
+            const status = subscription.data.status;
+            const subscriptionId = subscription.data.id;
 
-            <span className={'text-xs text-gray-500 dark:text-gray-400'}>
-              <Trans i18nKey={'subscription:manageBillingDescription'} />
-            </span>
-          </div>
+            if (status === 'cancelled') {
+              return (
+                <div>
+                  <ResumeSubscriptionPlanContainer
+                    subscriptionId={subscriptionId}
+                  />
+                </div>
+              );
+            }
+
+            return (
+              <div className={'flex space-x-2.5'}>
+                <UpdateSubscriptionPlanContainer
+                  subscriptionId={subscriptionId}
+                  currentPlanVariantId={subscription.data.variantId}
+                />
+
+                <UnsubscribeSubscriptionPlanContainer
+                  subscriptionId={subscriptionId}
+                />
+
+                <UpdatePaymentMethodLink
+                  href={subscription.data.updatePaymentMethodUrl}
+                />
+              </div>
+            );
+          }}
         </If>
       </IfHasPermissions>
     </div>
@@ -50,3 +72,15 @@ const Plans: React.FC = () => {
 };
 
 export default Plans;
+
+function UpdatePaymentMethodLink(
+  props: React.PropsWithChildren<{
+    href: string;
+  }>
+) {
+  return (
+    <Button color={'transparent'} href={props.href}>
+      <Trans i18nKey={'subscription:updatePaymentMethod'} />
+    </Button>
+  );
+}

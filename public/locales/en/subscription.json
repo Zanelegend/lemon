@@ -14,9 +14,20 @@
   "checkOutCompletedAlertHeading": "Checkout successfully completed",
   "checkOutCompletedAlert": "Yay, your payment went through!",
   "cancelAtPeriodEndDescription": "Your subscription is scheduled to be canceled on {{ endDate }}.",
-  "renewAtPeriodEndDescription": "Your subscription is scheduled to be renewed on {{ endDate }}",
+  "renewAtPeriodEndDescription": "Your subscription is scheduled to be renewed on {{ renewDate }}",
   "noPermissionsAlertHeading": "You don't have permissions to change the billing",
-  "noPermissionsAlertBody": "Please contact your organization owner to change the billing settings for\n      your organization.",
+  "noPermissionsAlertBody": "Please contact your organization owner to change the billing settings for your organization.",
+  "updatePlanModalHeading": "Switch to a different plan",
+  "updatePlanModalSubheading": "Choose a plan that suits your needs.",
+  "switchPlan": "Switch Plan",
+  "switchToPlan": "Switch to plan",
+  "confirmSwitchPlan": "Click again to confirm",
+  "resumeSubscription": "Resume Subscription",
+  "resumeSubscriptionBody": "By resuming your subscription, you will regain your plan benefits",
+  "confirmResumeSubscription": " Yes, Resume Subscription",
+  "cancelSubscription": "Cancel Subscription",
+  "cancelSubscriptionBody": "By unsubscribing, you will lose your plan benefits",
+  "confirmCancelSubscription": " Yes, Cancel Subscription",
   "status": {
     "free": {
       "label": "Free Plan",
@@ -28,7 +39,7 @@
       "heading": "Your subscription is active",
       "description": "Your subscription is active. You can manage your subscription and billing in the Customer Portal."
     },
-    "trialing": {
+    "on_trial": {
       "label": "Trial",
       "heading": "You're on a trial",
       "description": "Your trial will end on {{ trialEndDate }}."
@@ -53,7 +64,7 @@
       "heading": "We're waiting for your payment",
       "description": "We're waiting for your payment to go through. Please bear with us."
     },
-    "incomplete_expired": {
+    "expired": {
       "label": "Expired",
       "heading": "Your payment has expired",
       "description": "Your payment has expired. Please update your payment method."
