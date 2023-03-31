@@ -22,20 +22,20 @@ function SubscriptionStatusBadge({
       break;
 
     case 'on_trial':
-      label = 'subscription:status.trialing.label';
-      description = 'subscription:status.trialing.description';
+      label = 'subscription:status.on_trial.label';
+      description = 'subscription:status.on_trial.description';
       type = 'success';
       break;
 
     case 'cancelled':
-      label = 'subscription:status.canceled.label';
-      description = 'subscription:status.canceled.description';
+      label = 'subscription:status.cancelled.label';
+      description = 'subscription:status.cancelled.description';
       type = 'warn';
       break;
 
     case 'expired':
-      label = 'subscription:status.incomplete_expired.label';
-      description = 'subscription:status.incomplete_expired.description';
+      label = 'subscription:status.expired.label';
+      description = 'subscription:status.expired.description';
       type = 'error';
       break;
 

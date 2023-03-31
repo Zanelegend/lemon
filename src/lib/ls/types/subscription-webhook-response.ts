@@ -1,9 +1,11 @@
 import { OrganizationSubscriptionStatus } from '~/lib/organizations/types/organization-subscription';
 
-export interface SubscriptionWebhookResponse {
+interface SubscriptionWebhookResponse {
   meta: Meta;
   data: Data;
 }
+
+export default SubscriptionWebhookResponse;
 
 interface Data {
   type: string;

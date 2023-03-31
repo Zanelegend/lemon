@@ -12,31 +12,10 @@ export async function addSubscription(
   client: Client,
   subscription: OrganizationSubscription
 ) {
-  const data = subscriptionMapper(subscription);
-
   return getSubscriptionsTable(client)
-    .insert({
-      ...data,
-      id: subscription.id,
-    })
+    .insert(subscriptionMapper(subscription))
     .select('id')
-    .throwOnError()
     .single();
-}
-
-/**
- * @name deleteSubscription
- * @description Removes a subscription from an organization by
- * Stripe subscription ID
- */
-export async function deleteSubscription(
-  client: Client,
-  subscriptionId: string
-) {
-  return getSubscriptionsTable(client)
-    .delete()
-    .match({ id: subscriptionId })
-    .throwOnError();
 }
 
 /**
@@ -59,10 +38,9 @@ export async function updateSubscriptionById(
 function subscriptionMapper(
   subscription: OrganizationSubscription
 ): SubscriptionRow {
-  const variantId = subscription.id;
-
   const row: Partial<SubscriptionRow> = {
-    variant_id: variantId,
+    id: subscription.id,
+    variant_id: subscription.variantId,
     status: subscription.status,
     billing_anchor: subscription.billingAnchor,
     cancel_at_period_end: subscription.cancelAtPeriodEnd ?? false,

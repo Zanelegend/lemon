@@ -5,7 +5,7 @@ import Trans from '~/core/ui/Trans';
 import Button from '~/core/ui/Button';
 import Modal from '~/core/ui/Modal';
 
-import { useUnsubscribePlan } from '~/lib/ls/hooks/use-unsubscribe-plan';
+import useUnsubscribePlan from '~/lib/ls/hooks/use-unsubscribe-plan';
 
 function UnsubscribeSubscriptionPlanContainer(
   props: React.PropsWithChildren<{

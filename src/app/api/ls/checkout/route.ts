@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
 import { cookies, headers } from 'next/headers';
 
@@ -7,7 +7,7 @@ import { join } from 'path';
 
 import getLogger from '~/core/logger';
 import { canChangeBilling } from '~/lib/organizations/permissions';
-import { createLemonSqueezyCheckout } from '~/lib/ls/create-checkout';
+import createCheckout from '~/lib/ls/create-checkout';
 import getApiRefererPath from '~/core/generic/get-api-referer-path';
 import { parseOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
 import requireSession from '~/lib/user/require-session';
@@ -16,8 +16,8 @@ import getSupabaseServerClient from '~/core/supabase/server-client';
 export async function POST(req: NextRequest) {
   const logger = getLogger();
   const client = getSupabaseServerClient();
-
-  const bodyResult = getBodySchema().safeParse(req.body);
+  const formData = await req.formData();
+  const bodyResult = getBodySchema().safeParse(Object.fromEntries(formData));
   const userId = await requireSession(client);
 
   const currentOrganizationId = Number(
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   try {
     const storeId = getStoreId();
 
-    const response = await createLemonSqueezyCheckout({
+    const response = await createCheckout({
       organizationId,
       variantId,
       returnUrl,
@@ -70,7 +70,9 @@ export async function POST(req: NextRequest) {
     const url = response.data.attributes.url;
 
     // redirect user back based on the response
-    return redirect(url);
+    return NextResponse.redirect(url, {
+      status: 302,
+    });
   } catch (e) {
     logger.error(e, `Lemon Squeezy Checkout error`);
 
@@ -93,5 +95,6 @@ function getBodySchema() {
     organizationId: z.coerce.number().min(1),
     variantId: z.coerce.number().min(1),
     returnUrl: z.string().min(1),
+    csrf_token: z.string().min(1),
   });
 }

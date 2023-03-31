@@ -19,6 +19,7 @@ function ResumeSubscriptionPlanContainer(
   return (
     <>
       <Button
+        size={'small'}
         variant={'flat'}
         color={'primary'}
         onClick={() => setResumeRequested(true)}

@@ -58,13 +58,9 @@ export function setOrganizationSubscriptionData(
 ) {
   const { customerId, organizationId, subscriptionId } = props;
 
-  return client
-    .from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE)
-    .upsert({
-      customer_id: customerId,
-      subscription_id: subscriptionId,
-      organization_id: organizationId,
-    })
-    .match({ id: organizationId })
-    .throwOnError();
+  return client.from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE).insert({
+    customer_id: customerId,
+    subscription_id: subscriptionId,
+    organization_id: organizationId,
+  });
 }

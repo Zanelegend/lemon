@@ -37,8 +37,9 @@ const Plans: React.FC = () => {
           {(subscription) => {
             const status = subscription.data.status;
             const subscriptionId = subscription.data.id;
+            const isActive = status === 'active' || status === 'on_trial';
 
-            if (status === 'cancelled') {
+            if (status === 'cancelled' || status === 'paused') {
               return (
                 <div>
                   <ResumeSubscriptionPlanContainer
@@ -59,9 +60,11 @@ const Plans: React.FC = () => {
                   href={subscription.data.updatePaymentMethodUrl}
                 />
 
-                <UnsubscribeSubscriptionPlanContainer
-                  subscriptionId={subscriptionId}
-                />
+                <If condition={isActive}>
+                  <UnsubscribeSubscriptionPlanContainer
+                    subscriptionId={subscriptionId}
+                  />
+                </If>
               </div>
             );
           }}

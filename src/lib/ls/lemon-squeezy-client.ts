@@ -1,6 +1,6 @@
 const BASE_URL = 'https://api.lemonsqueezy.com';
 
-export function getLemonSqueezyClient() {
+function getLemonSqueezyClient() {
   const apiKey = process.env.LEMON_SQUEEZY_API_KEY;
 
   if (!apiKey) {
@@ -43,3 +43,5 @@ function getHeaders(apiKey: string) {
     Authorization: `Bearer ${apiKey}`,
   };
 }
+
+export default getLemonSqueezyClient;

@@ -26,13 +26,13 @@ function SubscriptionStatusAlert(
       type = 'success';
       break;
     case 'on_trial':
-      heading = 'subscription:status.trialing.heading';
-      message = 'subscription:status.trialing.description';
+      heading = 'subscription:status.on_trial.heading';
+      message = 'subscription:status.on_trial.description';
       type = 'success';
       break;
     case 'cancelled':
-      heading = 'subscription:status.canceled.heading';
-      message = 'subscription:status.canceled.description';
+      heading = 'subscription:status.cancelled.heading';
+      message = 'subscription:status.cancelled.description';
       type = 'warn';
       break;
     case 'paused':
@@ -41,8 +41,8 @@ function SubscriptionStatusAlert(
       type = 'warn';
       break;
     case 'expired':
-      heading = 'subscription:status.incomplete_expired.heading';
-      message = 'subscription:status.incomplete_expired.description';
+      heading = 'subscription:status.expired.heading';
+      message = 'subscription:status.expired.description';
       type = 'error';
       break;
     case 'unpaid':

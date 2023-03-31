@@ -9,7 +9,7 @@ const CSRF_SECRET_COOKIE = 'csrfSecret';
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|locales|assets|api/stripe/webhook).*)',
+    '/((?!_next/static|_next/image|favicon.ico|locales|assets|api/ls/webhook).*)',
   ],
 };
 

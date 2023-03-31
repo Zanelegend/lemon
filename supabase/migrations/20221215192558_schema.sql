@@ -39,8 +39,8 @@ create table organizations (
 
 create table organizations_subscriptions (
   organization_id bigint not null references public.organizations (id) on delete cascade,
-  subscription_id bigint unique references public.subscriptions (id) on delete set null,
-  customer_id bigint not null unique,
+  subscription_id bigint unique references public.subscriptions (id),
+  customer_id bigint not null,
   primary key (organization_id)
 );
 

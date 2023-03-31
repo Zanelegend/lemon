@@ -28,6 +28,7 @@
   "cancelSubscription": "Cancel Subscription",
   "cancelSubscriptionBody": "By unsubscribing, you will lose your plan benefits",
   "confirmCancelSubscription": " Yes, Cancel Subscription",
+  "updatePaymentMethod": "Update Payment Method",
   "status": {
     "free": {
       "label": "Free Plan",
@@ -49,7 +50,7 @@
       "heading": "Your invoice is past due",
       "description": "Your invoice is past due. Please update your payment method."
     },
-    "canceled": {
+    "cancelled": {
       "label": "Canceled",
       "heading": "Your subscription is canceled",
       "description": "Your subscription is canceled. It is scheduled to end on {{ endDate }}."

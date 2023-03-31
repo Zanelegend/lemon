@@ -1,7 +1,7 @@
-import { getLemonSqueezyClient } from '~/lib/ls/lemon-squeezy-client';
+import getClient from '~/lib/ls/lemon-squeezy-client';
 
-export async function unsubscribePlan(params: { subscriptionId: number }) {
-  const client = getLemonSqueezyClient();
+async function unsubscribePlan(params: { subscriptionId: number }) {
+  const client = getClient();
   const path = `v1/subscriptions/${params.subscriptionId}`;
 
   return client.request({
@@ -9,3 +9,5 @@ export async function unsubscribePlan(params: { subscriptionId: number }) {
     method: 'DELETE',
   });
 }
+
+export default unsubscribePlan;

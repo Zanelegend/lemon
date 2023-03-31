@@ -1,13 +1,13 @@
-import { getLemonSqueezyClient } from '~/lib/ls/lemon-squeezy-client';
+import getClient from '~/lib/ls/lemon-squeezy-client';
 import CreateCheckoutResponse from '~/lib/ls/types/create-checkout-response';
 
-export async function createLemonSqueezyCheckout(params: {
+async function createLemonSqueezyCheckout(params: {
   organizationId: number;
   variantId: number;
   storeId: number;
   returnUrl: string;
 }) {
-  const client = getLemonSqueezyClient();
+  const client = getClient();
   const path = 'v1/checkouts';
 
   return client.request<CreateCheckoutResponse>({
@@ -19,11 +19,12 @@ export async function createLemonSqueezyCheckout(params: {
         attributes: {
           checkout_data: {
             custom: {
-              organization_id: params.organizationId,
+              organization_id: params.organizationId.toString(),
             },
           },
           product_options: {
             redirect_url: params.returnUrl,
+            enabled_variants: [params.variantId],
           },
         },
         relationships: {
@@ -44,3 +45,5 @@ export async function createLemonSqueezyCheckout(params: {
     }),
   });
 }
+
+export default createLemonSqueezyCheckout;
