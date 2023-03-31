@@ -1,7 +1,7 @@
 import useSWRMutation from 'swr/mutation';
 import useFetch from '~/core/hooks/use-api';
 
-export function useUnsubscribePlan() {
+function useUnsubscribePlan() {
   const fetcher = useFetch<void, number>();
   const key = ['unsubscribe-plan'];
 
@@ -15,3 +15,5 @@ export function useUnsubscribePlan() {
     }
   );
 }
+
+export default useUnsubscribePlan;

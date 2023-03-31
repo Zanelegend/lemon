@@ -119,12 +119,6 @@ export async function PATCH(request: NextRequest, { params }: Params) {
   const client = getSupabaseServerClient();
   const userId = await validateRequest({ client, organizationId });
 
-  await assertUserCanChangeBilling({
-    client,
-    organizationId,
-    userId,
-  });
-
   logger.info(
     {
       subscriptionId,

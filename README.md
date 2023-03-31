@@ -130,24 +130,12 @@ yarn dev
 pnpm dev
 ```
 
-### Running the Stripe CLI
+### Setting up Lemon Squeezy
 
-If you're testing Stripe, also run the Stripe server (requires Docker running):
+To have your payments working, you will need to set up Lemon Squeezy.
 
-```
-npm run stripe:listen
-```
-
-Then, copy the printed webhook key and add it to your environment files.
-This can also be used for running the E2E tests.
-
-The environment variable name is `STRIPE_WEBHOOK_SECRET`.
-
-```
-STRIPE_WEBHOOK_SECRET=whsec_***********************
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To set up Lemon Squeezy, please follow the [documentation](https://makerkit.
+dev/docs/next-firebase/lemon-squeezy).
 
 ### After Creating your Supabase Project
 
