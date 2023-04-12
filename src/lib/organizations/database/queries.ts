@@ -14,7 +14,7 @@ const FETCH_ORGANIZATION_QUERY = `
   id,
   name,
   logoURL: logo_url,
-  subscription: organizations_subscriptions!inner (
+  subscription: organizations_subscriptions (
     customerId: customer_id,
     data: subscription_id (
       id,
@@ -171,7 +171,7 @@ export function getOrganizationByCustomerId(
       id,
       name,
       logoURL: logo_url,
-      subscription: organizations_subscriptions!inner (
+      subscription: organizations_subscriptions (
         customerId: customer_id
       )
       `
