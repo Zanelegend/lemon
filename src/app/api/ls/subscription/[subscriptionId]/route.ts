@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { NextRequest, NextResponse } from 'next/server';
-import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
 import getSupabaseServerClient from '~/core/supabase/server-client';
@@ -22,6 +21,7 @@ import requireSession from '~/lib/user/require-session';
 import { getUserMembershipByOrganization } from '~/lib/memberships/queries';
 import { canChangeBilling } from '~/lib/organizations/permissions';
 import { parseOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
+import { getOrganizationById } from '~/lib/organizations/database/queries';
 
 interface Params {
   params: {
@@ -32,9 +32,10 @@ interface Params {
 export async function DELETE(request: NextRequest, { params }: Params) {
   const subscriptionId = params.subscriptionId;
   const logger = getLogger();
-  const organizationId = await getOrganizationId();
   const client = getSupabaseServerClient();
-  const userId = await validateRequest({ client, organizationId });
+
+  const organizationUid = await getOrganizationUid(client);
+  const userId = await validateRequest({ client, organizationUid });
 
   logger.info(
     {
@@ -62,9 +63,10 @@ export async function DELETE(request: NextRequest, { params }: Params) {
 export async function PUT(request: NextRequest, { params }: Params) {
   const subscriptionId = params.subscriptionId;
   const logger = getLogger();
-  const organizationId = await getOrganizationId();
   const client = getSupabaseServerClient();
-  const userId = await validateRequest({ client, organizationId });
+
+  const organizationUid = await getOrganizationUid(client);
+  const userId = await validateRequest({ client, organizationUid });
 
   const body = await request.json();
   const variantId = getVariantSchema().parse(body).variantId;
@@ -112,11 +114,13 @@ export async function PUT(request: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
-  const subscriptionId = params.subscriptionId;
   const logger = getLogger();
-  const organizationId = await getOrganizationId();
   const client = getSupabaseServerClient();
-  const userId = await validateRequest({ client, organizationId });
+
+  const organizationUid = await getOrganizationUid(client);
+  const userId = await validateRequest({ client, organizationUid });
+
+  const subscriptionId = params.subscriptionId;
 
   logger.info(
     {
@@ -161,20 +165,15 @@ function findProductByVariantId(variantId: number) {
 
 async function validateRequest(params: {
   client: SupabaseClient;
-  organizationId: number;
+  organizationUid: string;
 }) {
-  const { client, organizationId } = params;
+  const { client, organizationUid } = params;
   const session = await requireSession(params.client);
-
-  if ('redirect' in session) {
-    return redirect(session.destination);
-  }
-
   const userId = session.user.id;
 
   await assertUserCanChangeBilling({
     client,
-    organizationId,
+    organizationUid,
     userId,
   });
 
@@ -183,14 +182,14 @@ async function validateRequest(params: {
 
 async function assertUserCanChangeBilling(params: {
   client: SupabaseClient;
-  organizationId: number;
+  organizationUid: string;
   userId: string;
 }) {
-  const { client, organizationId, userId } = params;
+  const { client, organizationUid, userId } = params;
 
   // check the user's role has access to the checkout
   const canChangeBilling = await getUserCanAccessCheckout(client, {
-    organizationId,
+    organizationUid,
     userId,
   });
 
@@ -201,7 +200,7 @@ async function assertUserCanChangeBilling(params: {
     getLogger().debug(
       {
         userId,
-        organizationId,
+        organizationUid,
       },
       `User attempted to access checkout but lacked permissions`
     );
@@ -221,7 +220,7 @@ async function assertUserCanChangeBilling(params: {
 async function getUserCanAccessCheckout(
   client: SupabaseClient,
   params: {
-    organizationId: number;
+    organizationUid: string;
     userId: string;
   }
 ) {
@@ -240,6 +239,18 @@ async function getUserCanAccessCheckout(
   }
 }
 
-async function getOrganizationId() {
-  return Number(await parseOrganizationIdCookie(cookies()));
+async function getOrganizationUid(client: SupabaseClient) {
+  const organizationId = Number(await parseOrganizationIdCookie(cookies()));
+  const { data, error } = await getOrganizationById(client, organizationId);
+
+  if (error) {
+    getLogger().error(
+      error,
+      `Could not retrieve organization by ID: ${organizationId}`
+    );
+
+    throw error;
+  }
+
+  return data.uuid;
 }

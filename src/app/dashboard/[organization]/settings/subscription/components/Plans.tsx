@@ -3,17 +3,17 @@
 import useCurrentOrganization from '~/lib/organizations/hooks/use-current-organization';
 
 import If from '~/core/ui/If';
+import Trans from '~/core/ui/Trans';
+import Button from '~/core/ui/Button';
 import SubscriptionCard from './SubscriptionCard';
 
 import { canChangeBilling } from '~/lib/organizations/permissions';
-import PlanSelectionForm from '~/app/(app)/settings/subscription/components/PlanSelectionForm';
-import IfHasPermissions from '~/app/(app)/components/IfHasPermissions';
 
 import UnsubscribeSubscriptionPlanContainer from '~/components/subscriptions/UnsubscribeSubscriptionPlanContainer';
 import ResumeSubscriptionPlanContainer from '~/components/subscriptions/ResumeSubscriptionPlanContainer';
 import UpdateSubscriptionPlanContainer from '~/components/subscriptions/UpdateSubscriptionPlanContainer';
-import Trans from '~/core/ui/Trans';
-import Button from '~/core/ui/Button';
+import PlanSelectionForm from '~/app/dashboard/[organization]/settings/subscription/components/PlanSelectionForm';
+import IfHasPermissions from '~/app/dashboard/[organization]/components/IfHasPermissions';
 
 const Plans: React.FC = () => {
   const organization = useCurrentOrganization();

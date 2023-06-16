@@ -16,7 +16,6 @@ const CheckoutRedirectButton: React.FCC<{
   variantId?: number;
   recommended?: boolean;
   organizationUid: Maybe<string>;
-  customerId: Maybe<string>;
 }> = ({ children, ...props }) => {
   return (
     <form

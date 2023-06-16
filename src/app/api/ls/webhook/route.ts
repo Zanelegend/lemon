@@ -110,11 +110,6 @@ async function onCheckoutCompleted(
   // add it to {@link buildOrganizationSubscription}
   const subscriptionData = buildOrganizationSubscription(response);
 
-  console.log({
-    organizationId,
-    ...subscriptionData,
-  });
-
   const { error, data } = await addSubscription(client, subscriptionData);
 
   if (error) {

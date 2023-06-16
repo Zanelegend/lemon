@@ -7,10 +7,6 @@ import {
 
 import type Organization from '~/lib/organizations/types/organization';
 import type { Database } from '~/database.types';
-import {
-  getOrganizationById,
-  getOrganizationByUid,
-} from '~/lib/organizations/database/queries';
 
 type OrganizationRow = Database['public']['Tables']['organizations']['Row'];
 
@@ -55,23 +51,12 @@ export async function updateOrganization(
 export async function setOrganizationSubscriptionData(
   client: Client,
   props: {
-    organizationUid: string;
+    organizationId: number;
     customerId: number;
     subscriptionId: number;
   }
 ) {
-  const { customerId, organizationUid, subscriptionId } = props;
-
-  const { data: organization, error } = await getOrganizationByUid(
-    client,
-    organizationUid
-  );
-
-  if (error || !organization) {
-    throw error;
-  }
-
-  const organizationId = organization.id;
+  const { customerId, organizationId, subscriptionId } = props;
 
   return client.from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE).insert({
     customer_id: customerId,
