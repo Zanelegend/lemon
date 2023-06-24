@@ -22,6 +22,8 @@ import configuration from '~/configuration';
 import { createOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
 import { getOrganizationById } from '~/lib/organizations/database/queries';
 
+const path = `/${configuration.paths.appHome}/[organization]/settings/organization/members`;
+
 export const updateMemberAction = withCsrfCheck(
   withSession(
     async (params: {
@@ -45,7 +47,7 @@ export const deleteMemberAction = withCsrfCheck(
     const client = getSupabaseServerActionClient();
 
     await handleRemoveMemberRequest(client, params.membershipId);
-    await revalidatePath('/settings/organization/members');
+    await revalidatePath(path);
 
     return {
       success: true,
@@ -173,7 +175,7 @@ async function handleRemoveMemberRequest(
     `Member successfully removed.`
   );
 
-  await revalidatePath('/settings/organization/members');
+  await revalidatePath(path);
 }
 
 async function handleUpdateMemberRequest(
@@ -206,7 +208,7 @@ async function handleUpdateMemberRequest(
     `Member successfully updated.`
   );
 
-  await revalidatePath('/settings/organization/members');
+  await revalidatePath(path);
 }
 
 function getUpdateMembershipBodySchema() {

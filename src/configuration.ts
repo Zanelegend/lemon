@@ -46,9 +46,6 @@ const configuration = {
       email: 'settings/profile/email',
       password: 'settings/profile/password',
     },
-    api: {
-      checkout: `/api/ls/checkout`
-    },
   },
   email: {
     host: '',

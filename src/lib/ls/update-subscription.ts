@@ -1,7 +1,7 @@
 import getClient from '~/lib/ls/lemon-squeezy-client';
 
 async function updateSubscription(params: {
-  subscriptionId: string;
+  subscriptionId: number;
   productId: number;
   variantId: number;
 }) {

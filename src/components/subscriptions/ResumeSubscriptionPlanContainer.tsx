@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useTransition } from 'react';
 
 import Trans from '~/core/ui/Trans';
 import Button from '~/core/ui/Button';
 import Modal from '~/core/ui/Modal';
-
-import { useResumePlan } from '~/lib/ls/hooks/use-resume-plan';
+import { resumeSubscriptionAction } from '~/lib/ls/actions';
+import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 function ResumeSubscriptionPlanContainer(
   props: React.PropsWithChildren<{
     subscriptionId: number;
   }>
 ) {
-  const router = useRouter();
   const [resumeRequested, setResumeRequested] = useState(false);
-  const { isMutating, trigger } = useResumePlan();
+  const [isMutating, startTransition] = useTransition();
+  const csrfToken = useCsrfToken();
 
   return (
     <>
@@ -52,11 +51,14 @@ function ResumeSubscriptionPlanContainer(
               variant={'flat'}
               color={'primary'}
               onClick={async () => {
-                await trigger(props.subscriptionId);
+                startTransition(async () => {
+                  await resumeSubscriptionAction({
+                    subscriptionId: props.subscriptionId,
+                    csrfToken,
+                  });
 
-                setResumeRequested(false);
-
-                router.refresh();
+                  setResumeRequested(false);
+                });
               }}
             >
               <Trans i18nKey={'subscription:confirmResumeSubscription'} />

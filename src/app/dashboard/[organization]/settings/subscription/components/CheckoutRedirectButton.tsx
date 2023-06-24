@@ -5,11 +5,9 @@ import ArrowRightIcon from '@heroicons/react/24/outline/ArrowRightIcon';
 import classNames from 'classnames';
 
 import Button from '~/core/ui/Button';
-import configuration from '~/configuration';
 import isBrowser from '~/core/generic/is-browser';
 import useCsrfToken from '~/core/hooks/use-csrf-token';
-
-const CHECKOUT_SESSION_API_ENDPOINT = configuration.paths.api.checkout;
+import { createCheckoutSessionAction } from '~/lib/ls/actions';
 
 const CheckoutRedirectButton: React.FCC<{
   disabled?: boolean;
@@ -20,7 +18,7 @@ const CheckoutRedirectButton: React.FCC<{
   return (
     <form
       data-cy={'checkout-form'}
-      action={CHECKOUT_SESSION_API_ENDPOINT}
+      action={createCheckoutSessionAction}
       method="POST"
     >
       <CheckoutFormData

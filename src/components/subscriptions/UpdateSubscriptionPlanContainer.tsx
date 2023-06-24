@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useTransition } from 'react';
 
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { Close as DialogPrimitiveClose } from '@radix-ui/react-dialog';
-
-import { useUpdatePlan } from '~/lib/ls/hooks/use-update-plan';
 
 import { Dialog, DialogContent, DialogTrigger } from '~/core/ui/Dialog';
 import Button from '~/core/ui/Button';
@@ -16,6 +13,8 @@ import Heading from '~/core/ui/Heading';
 import SubHeading from '~/core/ui/SubHeading';
 import If from '~/core/ui/If';
 import Trans from '~/core/ui/Trans';
+import useCsrfToken from '~/core/hooks/use-csrf-token';
+import { updatePlanAction } from '~/lib/ls/actions';
 
 function UpdateSubscriptionPlanContainer(
   props: React.PropsWithChildren<{
@@ -23,9 +22,9 @@ function UpdateSubscriptionPlanContainer(
     currentPlanVariantId: number;
   }>
 ) {
-  const router = useRouter();
   const [updateRequested, setUpdateRequested] = useState(false);
-  const { isMutating, trigger } = useUpdatePlan();
+  const [isMutating, startTransition] = useTransition();
+  const csrfToken = useCsrfToken();
 
   return (
     <>
@@ -78,9 +77,14 @@ function UpdateSubscriptionPlanContainer(
                     <UpdatePricingPlanCheckoutButton
                       recommended={recommended}
                       loading={isMutating}
-                      onClick={async () => {
-                        await trigger({ variantId, subscriptionId });
-                        await router.refresh();
+                      onClick={() => {
+                        startTransition(async () => {
+                          await updatePlanAction({
+                            variantId,
+                            subscriptionId,
+                            csrfToken,
+                          });
+                        });
                       }}
                     />
                   );

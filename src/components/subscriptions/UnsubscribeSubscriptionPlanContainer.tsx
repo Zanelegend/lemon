@@ -1,20 +1,19 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 
 import Trans from '~/core/ui/Trans';
 import Button from '~/core/ui/Button';
 import Modal from '~/core/ui/Modal';
-
-import useUnsubscribePlan from '~/lib/ls/hooks/use-unsubscribe-plan';
+import { unsubscribePlanAction } from '~/lib/ls/actions';
+import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 function UnsubscribeSubscriptionPlanContainer(
   props: React.PropsWithChildren<{
     subscriptionId: number;
   }>
 ) {
-  const router = useRouter();
   const [unsubscribeRequested, setUnsubscribeRequested] = useState(false);
-  const { isMutating, trigger } = useUnsubscribePlan();
+  const [isMutating, startTransition] = useTransition();
+  const csrfToken = useCsrfToken();
 
   return (
     <>
@@ -52,12 +51,15 @@ function UnsubscribeSubscriptionPlanContainer(
               loading={isMutating}
               variant={'flat'}
               color={'danger'}
-              onClick={async () => {
-                await trigger(props.subscriptionId);
+              onClick={() => {
+                startTransition(async () => {
+                  await unsubscribePlanAction({
+                    subscriptionId: props.subscriptionId,
+                    csrfToken,
+                  });
 
-                setUnsubscribeRequested(false);
-
-                router.refresh();
+                  setUnsubscribeRequested(false);
+                });
               }}
             >
               <Trans i18nKey={'subscription:confirmCancelSubscription'} />
