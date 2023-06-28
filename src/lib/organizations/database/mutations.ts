@@ -58,9 +58,18 @@ export async function setOrganizationSubscriptionData(
 ) {
   const { customerId, organizationId, subscriptionId } = props;
 
-  return client.from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE).insert({
-    customer_id: customerId,
-    subscription_id: subscriptionId,
-    organization_id: organizationId,
-  });
+  return client
+    .from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE)
+    .upsert(
+      {
+        customer_id: customerId,
+        subscription_id: subscriptionId,
+        organization_id: organizationId,
+      },
+      {
+        onConflict: 'customer_id',
+      }
+    )
+    .match({ customer_id: customerId })
+    .throwOnError();
 }
