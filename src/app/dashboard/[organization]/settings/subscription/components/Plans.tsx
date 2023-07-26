@@ -13,7 +13,7 @@ import UnsubscribeSubscriptionPlanContainer from '~/components/subscriptions/Uns
 import ResumeSubscriptionPlanContainer from '~/components/subscriptions/ResumeSubscriptionPlanContainer';
 import UpdateSubscriptionPlanContainer from '~/components/subscriptions/UpdateSubscriptionPlanContainer';
 import PlanSelectionForm from '~/app/dashboard/[organization]/settings/subscription/components/PlanSelectionForm';
-import IfHasPermissions from '~/app/dashboard/[organization]/components/IfHasPermissions';
+import IfHasPermissions from '~/components/IfHasPermissions';
 
 const Plans: React.FC = () => {
   const organization = useCurrentOrganization();
@@ -79,7 +79,7 @@ export default Plans;
 function UpdatePaymentMethodLink(
   props: React.PropsWithChildren<{
     href: string;
-  }>
+  }>,
 ) {
   return (
     <Button size={'small'} color={'secondary'} href={props.href}>
