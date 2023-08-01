@@ -56,7 +56,7 @@ export function getOrganizationsByUserId(client: Client, userId: string) {
       `
         role,
         userId: user_id,
-        organization:organization_id (${FETCH_ORGANIZATION_QUERY})`
+        organization:organization_id (${FETCH_ORGANIZATION_QUERY})`,
     )
     .eq('user_id', userId)
     .throwOnError();
@@ -64,7 +64,7 @@ export function getOrganizationsByUserId(client: Client, userId: string) {
 
 export async function getOrganizationInvitedMembers(
   client: Client,
-  organizationId: number
+  organizationId: number,
 ) {
   return client
     .from(MEMBERSHIPS_TABLE)
@@ -73,7 +73,7 @@ export async function getOrganizationInvitedMembers(
       id,
       role,
       invitedEmail: invited_email
-    `
+    `,
     )
     .eq('organization_id', organizationId)
     .not('code', 'is', null)
@@ -105,7 +105,7 @@ export function getOrganizationMembers(client: Client, organizationId: number) {
           photoUrl: photo_url,
           displayName: display_name
         )
-       `
+       `,
     )
     .eq('organization_id', organizationId)
     .is('code', null);
@@ -150,42 +150,13 @@ export function getOrganizationById(client: Client, organizationId: number) {
 }
 
 /**
- * @name getOrganizationByCustomerId
- * @description Retrieve an organization using the customer ID assigned by
- * Stripe after the first checkout, e,g. when the customer record is created
- * @param client
- * @param customerId
- */
-export function getOrganizationByCustomerId(
-  client: Client,
-  customerId: string
-) {
-  return client
-    .from(ORGANIZATIONS_TABLE)
-    .select(
-      `
-      id,
-      name,
-      logoURL: logo_url,
-      uuid,
-      subscription: organizations_subscriptions (
-        customerId: customer_id
-      )
-      `
-    )
-    .eq('organizations_subscriptions.customer_id', customerId)
-    .throwOnError()
-    .single();
-}
-
-/**
  * @name getMembersAuthMetadata
  * @param client
  * @param userIds
  */
 export async function getMembersAuthMetadata(
   client: Client,
-  userIds: string[]
+  userIds: string[],
 ) {
   const users = await Promise.all(
     userIds.map((userId) => {
@@ -200,12 +171,12 @@ export async function getMembersAuthMetadata(
             {
               userId,
             },
-            `Error fetching user: ${error}`
+            `Error fetching user: ${error}`,
           );
 
           return undefined;
         });
-    }) ?? []
+    }) ?? [],
   );
 
   return users.filter(Boolean) as User[];
