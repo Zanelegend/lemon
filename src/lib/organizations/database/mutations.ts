@@ -22,7 +22,7 @@ export async function updateOrganization(
   params: {
     id: number;
     data: Partial<Organization>;
-  }
+  },
 ) {
   const payload: Omit<Partial<OrganizationRow>, 'id'> = {
     name: params.data.name,
@@ -51,12 +51,23 @@ export async function updateOrganization(
 export async function setOrganizationSubscriptionData(
   client: Client,
   props: {
-    organizationId: number;
+    organizationUid: string;
     customerId: number;
     subscriptionId: number;
-  }
+  },
 ) {
-  const { customerId, organizationId, subscriptionId } = props;
+  const { customerId, organizationUid, subscriptionId } = props;
+
+  const organizationId = await getOrganizationIdFromUid(
+    client,
+    organizationUid,
+  );
+
+  console.log('organizationId', props);
+
+  if (!organizationId) {
+    throw new Error(`Organization ${organizationUid} not found`);
+  }
 
   return client
     .from(ORGANIZATIONS_SUBSCRIPTIONS_TABLE)
@@ -68,8 +79,17 @@ export async function setOrganizationSubscriptionData(
       },
       {
         onConflict: 'customer_id',
-      }
+      },
     )
     .match({ customer_id: customerId })
     .throwOnError();
+}
+
+async function getOrganizationIdFromUid(client: SupabaseClient, uuid: string) {
+  return client
+    .from(ORGANIZATIONS_TABLE)
+    .select('id')
+    .match({ uuid })
+    .single()
+    .then(({ data }) => data?.id);
 }

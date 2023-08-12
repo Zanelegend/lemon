@@ -37,19 +37,29 @@ export async function POST(req: NextRequest) {
   const rawBody = await reqClone.text();
 
   if (!signature) {
-    console.error(`Signature header not found`);
+    logger.error(
+      {
+        eventName,
+      },
+      `Signature header not found`,
+    );
 
     return throwBadRequestException();
   }
 
   if (!isSigningSecretValid(Buffer.from(rawBody), signature)) {
-    console.error(`Signing secret is invalid`);
+    logger.error(
+      {
+        eventName,
+      },
+      `Signing secret is invalid`,
+    );
 
     return throwUnauthorizedException();
   }
 
   // create an Admin client to write to the subscriptions table
-  const client = getSupabaseServerClient({
+  const adminClient = getSupabaseServerClient({
     admin: true,
   });
 
@@ -57,21 +67,24 @@ export async function POST(req: NextRequest) {
     {
       type: eventName,
     },
-    `[Lemon Squeezy] Received Webhook`
+    `[Lemon Squeezy] Received Webhook`,
   );
 
   try {
     switch (eventName) {
       case LemonSqueezyWebhooks.SubscriptionCreated: {
-        await onCheckoutCompleted(client, body as SubscriptionWebhookResponse);
+        await onCheckoutCompleted(
+          adminClient,
+          body as SubscriptionWebhookResponse,
+        );
 
         return respondOk();
       }
 
       case LemonSqueezyWebhooks.SubscriptionUpdated: {
         await onSubscriptionUpdated(
-          client,
-          body as SubscriptionWebhookResponse
+          adminClient,
+          body as SubscriptionWebhookResponse,
         );
 
         return respondOk();
@@ -84,10 +97,10 @@ export async function POST(req: NextRequest) {
       {
         type: eventName,
       },
-      `[Lemon Squeezy] Webhook handling failed`
+      `[Lemon Squeezy] Webhook handling failed`,
     );
 
-    logger.debug(e);
+    logger.error(e);
 
     return throwInternalServerErrorException();
   }
@@ -95,12 +108,12 @@ export async function POST(req: NextRequest) {
 
 async function onCheckoutCompleted(
   client: SupabaseClient,
-  response: SubscriptionWebhookResponse
+  response: SubscriptionWebhookResponse,
 ) {
   const attrs = response.data.attributes;
 
   // we have passed this data in the checkout
-  const organizationId = Number(response.meta.custom_data.organization_id);
+  const organizationUid = response.meta.custom_data.organization_id;
   const customerId = attrs.customer_id;
 
   // build organization subscription and set on the organization document
@@ -114,27 +127,27 @@ async function onCheckoutCompleted(
 
   if (error) {
     return Promise.reject(
-      `Failed to add subscription to the database: ${error}`
+      `Failed to add subscription to the database: ${error.message}`,
     );
   }
 
   const { error: setOrganizationSubscriptionError } =
     await setOrganizationSubscriptionData(client, {
-      organizationId,
+      organizationUid,
       customerId,
       subscriptionId: data.id,
     });
 
   if (setOrganizationSubscriptionError) {
     return Promise.reject(
-      `Failed to add organization subscription to the database: ${setOrganizationSubscriptionError}`
+      `Failed to add organization subscription to the database: ${setOrganizationSubscriptionError.message}`,
     );
   }
 }
 
 async function onSubscriptionUpdated(
   client: SupabaseClient,
-  subscription: SubscriptionWebhookResponse
+  subscription: SubscriptionWebhookResponse,
 ) {
   const subscriptionData = buildOrganizationSubscription(subscription);
 
