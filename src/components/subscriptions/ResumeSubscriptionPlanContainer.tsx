@@ -6,11 +6,13 @@ import Modal from '~/core/ui/Modal';
 import { resumeSubscriptionAction } from '~/lib/ls/actions';
 import useCsrfToken from '~/core/hooks/use-csrf-token';
 
-function ResumeSubscriptionPlanContainer(
-  props: React.PropsWithChildren<{
-    subscriptionId: number;
-  }>
-) {
+function ResumeSubscriptionPlanContainer({
+  subscriptionId,
+  organizationUid,
+}: React.PropsWithChildren<{
+  subscriptionId: number;
+  organizationUid: string;
+}>) {
   const [resumeRequested, setResumeRequested] = useState(false);
   const [isMutating, startTransition] = useTransition();
   const csrfToken = useCsrfToken();
@@ -53,7 +55,8 @@ function ResumeSubscriptionPlanContainer(
               onClick={async () => {
                 startTransition(async () => {
                   await resumeSubscriptionAction({
-                    subscriptionId: props.subscriptionId,
+                    subscriptionId,
+                    organizationUid,
                     csrfToken,
                   });
 

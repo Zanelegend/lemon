@@ -10,7 +10,7 @@ import Alert from '~/core/ui/Alert';
 
 import PricingTable from '~/components/PricingTable';
 import IfHasPermissions from '~/components/IfHasPermissions';
-import CheckoutRedirectButton from '~/app/dashboard/[organization]/settings/subscription/components/CheckoutRedirectButton';
+import CheckoutRedirectButton from '../components/CheckoutRedirectButton';
 
 const PlanSelectionForm: React.FCC<{
   organization: WithId<Organization>;

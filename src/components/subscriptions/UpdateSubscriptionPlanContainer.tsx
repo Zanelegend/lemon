@@ -16,12 +16,15 @@ import Trans from '~/core/ui/Trans';
 import useCsrfToken from '~/core/hooks/use-csrf-token';
 import { updatePlanAction } from '~/lib/ls/actions';
 
-function UpdateSubscriptionPlanContainer(
-  props: React.PropsWithChildren<{
-    subscriptionId: number;
-    currentPlanVariantId: number;
-  }>
-) {
+function UpdateSubscriptionPlanContainer({
+  subscriptionId,
+  organizationUid,
+  currentPlanVariantId,
+}: React.PropsWithChildren<{
+  subscriptionId: number;
+  organizationUid: string;
+  currentPlanVariantId: number;
+}>) {
   const [updateRequested, setUpdateRequested] = useState(false);
   const [isMutating, startTransition] = useTransition();
   const csrfToken = useCsrfToken();
@@ -67,11 +70,9 @@ function UpdateSubscriptionPlanContainer(
             <div className={'flex flex-col space-y-2 text-sm'}>
               <PricingTable
                 CheckoutButton={({ variantId, recommended }) => {
-                  if (!variantId || variantId === props.currentPlanVariantId) {
+                  if (!variantId || variantId === currentPlanVariantId) {
                     return null;
                   }
-
-                  const subscriptionId = props.subscriptionId;
 
                   return (
                     <UpdatePricingPlanCheckoutButton
@@ -82,6 +83,7 @@ function UpdateSubscriptionPlanContainer(
                           await updatePlanAction({
                             variantId,
                             subscriptionId,
+                            organizationUid,
                             csrfToken,
                           });
                         });
@@ -112,7 +114,7 @@ function UpdatePricingPlanCheckoutButton(
     onClick: () => void;
     recommended?: boolean;
     loading?: boolean;
-  }>
+  }>,
 ) {
   const [confirm, setConfirm] = useState(false);
 

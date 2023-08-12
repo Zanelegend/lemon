@@ -16,11 +16,7 @@ const CheckoutRedirectButton: React.FCC<{
   organizationUid: Maybe<string>;
 }> = ({ children, ...props }) => {
   return (
-    <form
-      data-cy={'checkout-form'}
-      action={createCheckoutSessionAction}
-      method="POST"
-    >
+    <form data-cy={'checkout-form'} action={createCheckoutSessionAction}>
       <CheckoutFormData
         organizationUid={props.organizationUid}
         variantId={props.variantId}
@@ -50,7 +46,7 @@ function CheckoutFormData(
   props: React.PropsWithChildren<{
     organizationUid: Maybe<string>;
     variantId: Maybe<number>;
-  }>
+  }>,
 ) {
   const csrfToken = useCsrfToken();
 

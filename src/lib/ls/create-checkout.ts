@@ -2,7 +2,7 @@ import getClient from '~/lib/ls/lemon-squeezy-client';
 import CreateCheckoutResponse from '~/lib/ls/types/create-checkout-response';
 
 async function createLemonSqueezyCheckout(params: {
-  organizationId: number;
+  organizationUid: string;
   variantId: number;
   storeId: number;
   returnUrl: string;
@@ -19,7 +19,7 @@ async function createLemonSqueezyCheckout(params: {
         attributes: {
           checkout_data: {
             custom: {
-              organization_id: params.organizationId.toString(),
+              organization_id: params.organizationUid,
             },
           },
           product_options: {

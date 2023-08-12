@@ -1,7 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { cookies, headers } from 'next/headers';
+import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
+
 import { RedirectType } from 'next/dist/client/components/redirect';
 
 import { z } from 'zod';
@@ -12,20 +14,17 @@ import getLogger from '~/core/logger';
 import { canChangeBilling } from '~/lib/organizations/permissions';
 import createCheckout from '~/lib/ls/create-checkout';
 import getApiRefererPath from '~/core/generic/get-api-referer-path';
-import { parseOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
 import requireSession from '~/lib/user/require-session';
 import getSupabaseServerClient from '~/core/supabase/server-client';
 import unsubscribePlan from '~/lib/ls/unsubscribe-plan';
 
 import { getUserMembershipByOrganization } from '~/lib/memberships/queries';
-import { getOrganizationById } from '~/lib/organizations/database/queries';
 import resumeSubscription from '~/lib/ls/resume-subscription';
 import getSupabaseServerActionClient from '~/core/supabase/action-client';
 import updateSubscription from '~/lib/ls/update-subscription';
 
 import configuration from '~/configuration';
 import { withCsrfCheck, withSession } from '~/core/generic/actions-utils';
-import { revalidatePath } from 'next/cache';
 
 const path = `/${configuration.paths.appHome}/[organization]/settings/subscription`;
 
@@ -34,118 +33,116 @@ export async function createCheckoutSessionAction(formData: FormData) {
   const client = getSupabaseServerClient();
 
   const bodyResult = getCreateCheckoutBodySchema().safeParse(
-    Object.fromEntries(formData)
+    Object.fromEntries(formData),
   );
 
-  const userId = await requireSession(client);
-
-  const currentOrganizationId = Number(
-    await parseOrganizationIdCookie(cookies())
-  );
-
-  const redirectToErrorPage = () => {
-    const referer = getApiRefererPath(headers());
-    const url = join(referer, `?error=true`);
-
-    return redirect(url);
-  };
+  const { user } = await requireSession(client);
+  const userId = user.id;
 
   if (!bodyResult.success) {
-    return redirectToErrorPage();
-  }
-
-  const { organizationId, returnUrl, variantId } = bodyResult.data;
-  const matchesSessionOrganizationId = currentOrganizationId === organizationId;
-
-  if (!matchesSessionOrganizationId) {
-    return redirectToErrorPage();
-  }
-
-  // disallow if the user doesn't have permissions to change
-  // billing settings based on its role. To change the logic, please update
-  // {@link canChangeBilling}
-  if (!canChangeBilling) {
-    logger.debug(
+    logger.error(
       {
-        userId,
-        organizationId,
+        error: bodyResult.error,
       },
-      `User attempted to access checkout but lacked permissions`
+      `Invalid body for create checkout session`,
     );
 
     return redirectToErrorPage();
   }
 
-  try {
-    const storeId = getStoreId();
+  const { organizationUid, returnUrl, variantId } = bodyResult.data;
 
-    const response = await createCheckout({
-      organizationId,
-      variantId,
-      returnUrl,
-      storeId,
-    });
+  // check if user can access the checkout
+  // if not, redirect to the error page
+  await assertUserCanAccessCheckout({
+    client,
+    userId,
+    organizationUid,
+  });
 
-    const url = response.data.attributes.url;
+  const storeId = getStoreId();
 
-    // redirect user back based on the response
-    return redirect(url, RedirectType.replace);
-  } catch (e) {
-    logger.error(e, `Lemon Squeezy Checkout error`);
+  const response = await createCheckout({
+    organizationUid,
+    variantId,
+    returnUrl,
+    storeId,
+  }).catch((error) => {
+    logger.error({ error }, `Error creating checkout session`);
+  });
 
+  if (!response) {
     return redirectToErrorPage();
   }
+
+  revalidatePath(path);
+
+  const url = response.data.attributes.url;
+
+  // redirect user back based on the response
+  return redirect(url, RedirectType.replace);
 }
 
 export const unsubscribePlanAction = withCsrfCheck(
-  withSession(async (params: { subscriptionId: number; csrfToken: string }) => {
-    const subscriptionId = params.subscriptionId;
-    const logger = getLogger();
-    const client = getSupabaseServerClient();
+  withSession(
+    async (params: {
+      organizationUid: string;
+      subscriptionId: number;
+      csrfToken: string;
+    }) => {
+      const { subscriptionId, organizationUid } = params;
+      const logger = getLogger();
+      const client = getSupabaseServerClient();
+      const userId = await validateRequest({ client, organizationUid });
 
-    const organizationUid = await getOrganizationUid(client);
-    const userId = await validateRequest({ client, organizationUid });
-
-    logger.info(
-      {
+      // check if user can access the checkout
+      // if not, redirect to the error page
+      await assertUserCanAccessCheckout({
+        client,
         userId,
+        organizationUid,
+      });
+
+      logger.info(
+        {
+          userId,
+          subscriptionId,
+        },
+        `Deleting subscription plan.`,
+      );
+
+      await unsubscribePlan({
         subscriptionId,
-      },
-      `Deleting subscription plan.`
-    );
+      });
 
-    await unsubscribePlan({
-      subscriptionId,
-    });
+      logger.info(
+        {
+          userId,
+          subscriptionId,
+        },
+        `Subscription plan successfully deleted.`,
+      );
 
-    logger.info(
-      {
-        userId,
-        subscriptionId,
-      },
-      `Subscription plan successfully deleted.`
-    );
+      revalidatePath(path);
 
-    revalidatePath(path);
-
-    return { success: true };
-  })
+      return { success: true };
+    },
+  ),
 );
 
 export const updatePlanAction = withCsrfCheck(
   withSession(
     async (params: {
+      organizationUid: string;
       subscriptionId: number;
       variantId: number;
       csrfToken: string;
     }) => {
-      const subscriptionId = params.subscriptionId;
+      const { subscriptionId, organizationUid } = params;
       const variantId = params.variantId;
 
       const logger = getLogger();
       const client = getSupabaseServerClient();
-
-      const organizationUid = await getOrganizationUid(client);
       const userId = await validateRequest({ client, organizationUid });
 
       const product = findProductByVariantId(variantId);
@@ -156,11 +153,19 @@ export const updatePlanAction = withCsrfCheck(
             userId,
             subscriptionId,
           },
-          `Subscription product not found. Cannot update subscription. Did you add the ID to the configuration?`
+          `Subscription product not found. Cannot update subscription. Did you add the ID to the configuration?`,
         );
 
         throw new Error(`Subscription product not found.`);
       }
+
+      // check if user can access the checkout
+      // if not, redirect to the error page
+      await assertUserCanAccessCheckout({
+        client,
+        userId,
+        organizationUid,
+      });
 
       logger.info(
         {
@@ -169,7 +174,7 @@ export const updatePlanAction = withCsrfCheck(
           variantId,
           productId: product.productId,
         },
-        `Updating subscription plan.`
+        `Updating subscription plan.`,
       );
 
       await updateSubscription({
@@ -185,33 +190,35 @@ export const updatePlanAction = withCsrfCheck(
           variantId,
           productId: product.productId,
         },
-        `Plan successfully updated.`
+        `Plan successfully updated.`,
       );
 
       revalidatePath(path);
 
       return { success: true };
-    }
-  )
+    },
+  ),
 );
 
 export const resumeSubscriptionAction = withSession(
   withCsrfCheck(
-    async (params: { subscriptionId: number; csrfToken: string }) => {
+    async (params: {
+      organizationUid: string;
+      subscriptionId: number;
+      csrfToken: string;
+    }) => {
       const logger = getLogger();
       const client = getSupabaseServerActionClient();
 
-      const organizationUid = await getOrganizationUid(client);
+      const { organizationUid, subscriptionId } = params;
       const userId = await validateRequest({ client, organizationUid });
-
-      const subscriptionId = params.subscriptionId;
 
       logger.info(
         {
           subscriptionId,
           userId,
         },
-        `Resuming subscription plan.`
+        `Resuming subscription plan.`,
       );
 
       await resumeSubscription({
@@ -223,14 +230,14 @@ export const resumeSubscriptionAction = withSession(
           subscriptionId,
           userId,
         },
-        `Subscription plan successfully resumed.`
+        `Subscription plan successfully resumed.`,
       );
 
       revalidatePath(path);
 
       return { success: true };
-    }
-  )
+    },
+  ),
 );
 
 function getStoreId() {
@@ -277,7 +284,7 @@ async function assertUserCanChangeBilling(params: {
         userId,
         organizationUid,
       },
-      `User attempted to access checkout but lacked permissions`
+      `User attempted to access checkout but lacked permissions`,
     );
 
     throw new Error(`You do not have permission to access this page`);
@@ -295,7 +302,7 @@ async function getUserCanAccessCheckout(
   params: {
     organizationUid: string;
     userId: string;
-  }
+  },
 ) {
   try {
     const { role } = await getUserMembershipByOrganization(client, params);
@@ -310,22 +317,6 @@ async function getUserCanAccessCheckout(
 
     return false;
   }
-}
-
-async function getOrganizationUid(client: SupabaseClient) {
-  const organizationId = Number(await parseOrganizationIdCookie(cookies()));
-  const { data, error } = await getOrganizationById(client, organizationId);
-
-  if (error) {
-    getLogger().error(
-      error,
-      `Could not retrieve organization by ID: ${organizationId}`
-    );
-
-    throw error;
-  }
-
-  return data.uuid;
 }
 
 async function validateRequest(params: {
@@ -345,11 +336,50 @@ async function validateRequest(params: {
   return userId;
 }
 
+async function assertUserCanAccessCheckout({
+  client,
+  organizationUid,
+  userId,
+}: {
+  client: SupabaseClient;
+  userId: string;
+  organizationUid: string;
+}) {
+  const logger = getLogger();
+
+  const { role } = await getUserMembershipByOrganization(client, {
+    userId,
+    organizationUid,
+  });
+
+  // disallow if the user doesn't have permissions to change
+  // billing settings based on its role. To change the logic, please update
+  // {@link canChangeBilling}
+  if (!canChangeBilling(role)) {
+    logger.debug(
+      {
+        userId,
+        organizationUid,
+      },
+      `User attempted to access checkout but lacked permissions`,
+    );
+
+    return redirectToErrorPage();
+  }
+}
+
 function getCreateCheckoutBodySchema() {
   return z.object({
-    organizationId: z.coerce.number().min(1),
+    organizationUid: z.string().uuid(),
     variantId: z.coerce.number().min(1),
     returnUrl: z.string().min(1),
     csrf_token: z.string().min(1),
   });
+}
+
+function redirectToErrorPage() {
+  const referer = getApiRefererPath(headers());
+  const url = join(referer, `?error=true`);
+
+  return redirect(url);
 }

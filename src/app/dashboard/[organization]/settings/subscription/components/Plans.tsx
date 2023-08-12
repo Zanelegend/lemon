@@ -43,6 +43,7 @@ const Plans: React.FC = () => {
               return (
                 <div>
                   <ResumeSubscriptionPlanContainer
+                    organizationUid={organization.uuid}
                     subscriptionId={subscriptionId}
                   />
                 </div>
@@ -52,6 +53,7 @@ const Plans: React.FC = () => {
             return (
               <div className={'flex space-x-2.5'}>
                 <UpdateSubscriptionPlanContainer
+                  organizationUid={organization.uuid}
                   subscriptionId={subscriptionId}
                   currentPlanVariantId={subscription.data.variantId}
                 />
@@ -63,6 +65,7 @@ const Plans: React.FC = () => {
                 <If condition={isActive}>
                   <UnsubscribeSubscriptionPlanContainer
                     subscriptionId={subscriptionId}
+                    organizationUid={organization.uuid}
                   />
                 </If>
               </div>

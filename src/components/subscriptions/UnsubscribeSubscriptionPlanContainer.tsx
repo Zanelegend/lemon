@@ -9,7 +9,8 @@ import useCsrfToken from '~/core/hooks/use-csrf-token';
 function UnsubscribeSubscriptionPlanContainer(
   props: React.PropsWithChildren<{
     subscriptionId: number;
-  }>
+    organizationUid: string;
+  }>,
 ) {
   const [unsubscribeRequested, setUnsubscribeRequested] = useState(false);
   const [isMutating, startTransition] = useTransition();
@@ -55,6 +56,7 @@ function UnsubscribeSubscriptionPlanContainer(
                 startTransition(async () => {
                   await unsubscribePlanAction({
                     subscriptionId: props.subscriptionId,
+                    organizationUid: props.organizationUid,
                     csrfToken,
                   });
 
