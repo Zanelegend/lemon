@@ -23,6 +23,8 @@ import configuration from '~/configuration';
 type Response = Awaited<ReturnType<typeof getOrganizations>>;
 type Organizations = Response['organizations'];
 
+const EMPTY_ROW = <span>-</span>;
+
 const columns: Array<ColumnDef<Organizations[0]>> = [
   {
     header: 'ID',
@@ -45,23 +47,23 @@ const columns: Array<ColumnDef<Organizations[0]>> = [
     header: 'Subscription',
     id: 'subscription',
     cell: ({ row }) => {
-      const priceId = row.original?.subscription?.data?.priceId;
+      const variantId = row.original?.subscription?.data?.variantId;
 
-      const plan = configuration.stripe.products.find((product) => {
-        return product.plans.some((plan) => plan.stripePriceId === priceId);
+      const plan = configuration.subscriptions.products.find((product) => {
+        return product.plans.some((plan) => plan.variantId === variantId);
       });
 
       if (plan) {
-        const price = plan.plans.find((plan) => plan.stripePriceId === priceId);
+        const variant = plan.plans.find((plan) => plan.variantId === variantId);
 
-        if (!price) {
+        if (!variant) {
           return 'Unknown Price';
         }
 
-        return `${plan.name} - ${price.name}`;
+        return `${plan.name} - ${variant.name}`;
       }
 
-      return '-';
+      return EMPTY_ROW;
     },
   },
   {
@@ -71,7 +73,7 @@ const columns: Array<ColumnDef<Organizations[0]>> = [
       const subscription = row.original?.subscription?.data;
 
       if (!subscription) {
-        return '-';
+        return EMPTY_ROW;
       }
 
       return <SubscriptionStatusBadge subscription={subscription} />;
@@ -88,7 +90,12 @@ const columns: Array<ColumnDef<Organizations[0]>> = [
       }
 
       const canceled = subscription.cancelAtPeriodEnd;
-      const date = subscription.periodEndsAt;
+      const date = subscription.endsAt;
+
+      if (!date) {
+        return EMPTY_ROW;
+      }
+
       const formattedDate = new Date(date).toLocaleDateString();
 
       return canceled ? (
