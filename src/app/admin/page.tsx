@@ -53,7 +53,7 @@ async function loadData() {
     .select(``, {
       count: 'exact',
     })
-    .eq('status', 'trialing');
+    .eq('status', 'on_trial');
 
   return {
     usersCount: usersCount || 0,
