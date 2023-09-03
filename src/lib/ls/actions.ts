@@ -24,7 +24,7 @@ import getSupabaseServerActionClient from '~/core/supabase/action-client';
 import updateSubscription from '~/lib/ls/update-subscription';
 
 import configuration from '~/configuration';
-import { withCsrfCheck, withSession } from '~/core/generic/actions-utils';
+import { withSession } from '~/core/generic/actions-utils';
 
 const path = `/${configuration.paths.appHome}/[organization]/settings/subscription`;
 
@@ -83,161 +83,155 @@ export async function createCheckoutSessionAction(formData: FormData) {
   return redirect(url, RedirectType.replace);
 }
 
-export const unsubscribePlanAction = withCsrfCheck(
-  withSession(
-    async (params: {
-      organizationUid: string;
-      subscriptionId: number;
-      csrfToken: string;
-    }) => {
-      const { subscriptionId, organizationUid } = params;
-      const logger = getLogger();
-      const client = getSupabaseServerClient();
-      const userId = await validateRequest({ client, organizationUid });
+export const unsubscribePlanAction = withSession(
+  async (params: {
+    organizationUid: string;
+    subscriptionId: number;
+    csrfToken: string;
+  }) => {
+    const { subscriptionId, organizationUid } = params;
+    const logger = getLogger();
+    const client = getSupabaseServerClient();
+    const userId = await validateRequest({ client, organizationUid });
 
-      // check if user can access the checkout
-      // if not, redirect to the error page
-      await assertUserCanAccessCheckout({
-        client,
+    // check if user can access the checkout
+    // if not, redirect to the error page
+    await assertUserCanAccessCheckout({
+      client,
+      userId,
+      organizationUid,
+    });
+
+    logger.info(
+      {
         userId,
-        organizationUid,
-      });
-
-      logger.info(
-        {
-          userId,
-          subscriptionId,
-        },
-        `Deleting subscription plan.`,
-      );
-
-      await unsubscribePlan({
         subscriptionId,
-      });
+      },
+      `Deleting subscription plan.`,
+    );
 
-      logger.info(
-        {
-          userId,
-          subscriptionId,
-        },
-        `Subscription plan successfully deleted.`,
-      );
+    await unsubscribePlan({
+      subscriptionId,
+    });
 
-      revalidatePath(path);
+    logger.info(
+      {
+        userId,
+        subscriptionId,
+      },
+      `Subscription plan successfully deleted.`,
+    );
 
-      return { success: true };
-    },
-  ),
+    revalidatePath(path);
+
+    return { success: true };
+  },
 );
 
-export const updatePlanAction = withCsrfCheck(
-  withSession(
-    async (params: {
-      organizationUid: string;
-      subscriptionId: number;
-      variantId: number;
-      csrfToken: string;
-    }) => {
-      const { subscriptionId, organizationUid } = params;
-      const variantId = params.variantId;
+export const updatePlanAction = withSession(
+  async (params: {
+    organizationUid: string;
+    subscriptionId: number;
+    variantId: number;
+    csrfToken: string;
+  }) => {
+    const { subscriptionId, organizationUid } = params;
+    const variantId = params.variantId;
 
-      const logger = getLogger();
-      const client = getSupabaseServerClient();
-      const userId = await validateRequest({ client, organizationUid });
+    const logger = getLogger();
+    const client = getSupabaseServerClient();
+    const userId = await validateRequest({ client, organizationUid });
 
-      const product = findProductByVariantId(variantId);
+    const product = findProductByVariantId(variantId);
 
-      if (!product || !product.productId) {
-        logger.error(
-          {
-            userId,
-            subscriptionId,
-          },
-          `Subscription product not found. Cannot update subscription. Did you add the ID to the configuration?`,
-        );
+    if (!product || !product.productId) {
+      logger.error(
+        {
+          userId,
+          subscriptionId,
+        },
+        `Subscription product not found. Cannot update subscription. Did you add the ID to the configuration?`,
+      );
 
-        throw new Error(`Subscription product not found.`);
-      }
+      throw new Error(`Subscription product not found.`);
+    }
 
-      // check if user can access the checkout
-      // if not, redirect to the error page
-      await assertUserCanAccessCheckout({
-        client,
+    // check if user can access the checkout
+    // if not, redirect to the error page
+    await assertUserCanAccessCheckout({
+      client,
+      userId,
+      organizationUid,
+    });
+
+    logger.info(
+      {
         userId,
-        organizationUid,
-      });
-
-      logger.info(
-        {
-          userId,
-          subscriptionId,
-          variantId,
-          productId: product.productId,
-        },
-        `Updating subscription plan.`,
-      );
-
-      await updateSubscription({
         subscriptionId,
-        productId: product.productId,
         variantId,
-      });
+        productId: product.productId,
+      },
+      `Updating subscription plan.`,
+    );
 
-      logger.info(
-        {
-          userId,
-          subscriptionId,
-          variantId,
-          productId: product.productId,
-        },
-        `Plan successfully updated.`,
-      );
+    await updateSubscription({
+      subscriptionId,
+      productId: product.productId,
+      variantId,
+    });
 
-      revalidatePath(path);
+    logger.info(
+      {
+        userId,
+        subscriptionId,
+        variantId,
+        productId: product.productId,
+      },
+      `Plan successfully updated.`,
+    );
 
-      return { success: true };
-    },
-  ),
+    revalidatePath(path);
+
+    return { success: true };
+  },
 );
 
 export const resumeSubscriptionAction = withSession(
-  withCsrfCheck(
-    async (params: {
-      organizationUid: string;
-      subscriptionId: number;
-      csrfToken: string;
-    }) => {
-      const logger = getLogger();
-      const client = getSupabaseServerActionClient();
+  async (params: {
+    organizationUid: string;
+    subscriptionId: number;
+    csrfToken: string;
+  }) => {
+    const logger = getLogger();
+    const client = getSupabaseServerActionClient();
 
-      const { organizationUid, subscriptionId } = params;
-      const userId = await validateRequest({ client, organizationUid });
+    const { organizationUid, subscriptionId } = params;
+    const userId = await validateRequest({ client, organizationUid });
 
-      logger.info(
-        {
-          subscriptionId,
-          userId,
-        },
-        `Resuming subscription plan.`,
-      );
+    logger.info(
+      {
+        subscriptionId,
+        userId,
+      },
+      `Resuming subscription plan.`,
+    );
 
-      await resumeSubscription({
-        subscriptionId: Number(subscriptionId),
-      });
+    await resumeSubscription({
+      subscriptionId: Number(subscriptionId),
+    });
 
-      logger.info(
-        {
-          subscriptionId,
-          userId,
-        },
-        `Subscription plan successfully resumed.`,
-      );
+    logger.info(
+      {
+        subscriptionId,
+        userId,
+      },
+      `Subscription plan successfully resumed.`,
+    );
 
-      revalidatePath(path);
+    revalidatePath(path);
 
-      return { success: true };
-    },
-  ),
+    return { success: true };
+  },
 );
 
 function getStoreId() {

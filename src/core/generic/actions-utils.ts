@@ -7,7 +7,9 @@ import isUserSuperAdmin from '~/app/admin/utils/is-user-super-admin';
 
 /**
  * @name withCsrfCheck
- * @description Verifies the CSRF token
+ * @description Verifies the CSRF token. Use this for all actions that do
+ * not use JSON bodies - such as forms/FormData
+ *
  * Usage:
  * export const action = withCsrfCheck(async (params) => {
  *   //
