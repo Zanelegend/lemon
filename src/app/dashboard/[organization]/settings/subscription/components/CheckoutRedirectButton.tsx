@@ -58,7 +58,7 @@ function CheckoutFormData(
         defaultValue={props.organizationUid}
       />
 
-      <input type="hidden" name={'csrf_token'} defaultValue={csrfToken} />
+      <input type="hidden" name={'csrfToken'} defaultValue={csrfToken} />
       <input type="hidden" name={'returnUrl'} defaultValue={getReturnUrl()} />
       <input type="hidden" name={'variantId'} defaultValue={props.variantId} />
     </>

@@ -26,7 +26,11 @@ import configuration from '~/configuration';
 const path = `/${configuration.paths.appHome}/[organization]/settings/organization/members`;
 
 export const updateMemberAction = withSession(
-  async (params: { membershipId: number; role: MembershipRole }) => {
+  async (params: {
+    membershipId: number;
+    role: MembershipRole;
+    csrfToken: string;
+  }) => {
     const client = getSupabaseServerActionClient();
 
     await handleUpdateMemberRequest(client, params);
@@ -41,7 +45,7 @@ export const updateMemberAction = withSession(
 );
 
 export const deleteMemberAction = withSession(
-  async (params: { membershipId: number }) => {
+  async (params: { membershipId: number; csrfToken: string }) => {
     const client = getSupabaseServerActionClient();
 
     await handleRemoveMemberRequest(client, params.membershipId);
@@ -57,6 +61,7 @@ export const deleteMemberAction = withSession(
 
 export const acceptInviteAction = async (params: {
   code: string;
+  csrfToken: string;
   userId?: string;
 }) => {
   const code = params.code;
