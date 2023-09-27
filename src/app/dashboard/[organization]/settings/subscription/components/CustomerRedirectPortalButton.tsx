@@ -14,7 +14,7 @@ const CustomerPortalRedirectButton: React.FCC<{
     >
       <CSRFTokenInput />
 
-      <Button color={'secondary'} type="submit" disabled={props.disabled}>
+      <Button variant={'secondary'} type="submit" disabled={props.disabled}>
         <span className={'flex items-center space-x-2'}>
           <span>{children}</span>
 
