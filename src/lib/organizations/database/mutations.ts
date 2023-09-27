@@ -63,8 +63,6 @@ export async function setOrganizationSubscriptionData(
     organizationUid,
   );
 
-  console.log('organizationId', props);
-
   if (!organizationId) {
     throw new Error(`Organization ${organizationUid} not found`);
   }

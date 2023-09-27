@@ -44,6 +44,7 @@ interface Attributes {
 
 interface Urls {
   update_payment_method: string;
+  customer_portal: string;
 }
 
 interface DataLinks {
