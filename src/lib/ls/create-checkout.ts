@@ -16,10 +16,10 @@ async function createLemonSqueezyCheckout(params: {
         custom: {
           organization_uid: params.organizationUid,
         },
-        product_options: {
-          redirect_url: params.returnUrl,
-          enabled_variants: [params.variantId],
-        },
+      },
+      product_options: {
+        redirect_url: params.returnUrl,
+        enabled_variants: [params.variantId],
       },
     },
   });

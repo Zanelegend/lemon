@@ -3,13 +3,14 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
 import type { OrganizationSubscription } from '~/lib/organizations/types/organization-subscription';
 
+import SubscriptionStatusBadge from '~/app/dashboard/[organization]/components/organizations/SubscriptionStatusBadge';
+
 import Heading from '~/core/ui/Heading';
 import If from '~/core/ui/If';
 import Trans from '~/core/ui/Trans';
 
 import PricingTable from '~/components/PricingTable';
-import SubscriptionStatusBadge from '~/app/dashboard/[organization]/components/organizations/SubscriptionStatusBadge';
-import SubscriptionStatusAlert from '~/app/dashboard/[organization]/settings/subscription/components/SubscriptionStatusAlert';
+import SubscriptionStatusAlert from './SubscriptionStatusAlert';
 
 import configuration from '~/configuration';
 
@@ -84,7 +85,7 @@ function RenewStatusDescription(
       renewDate: string;
       trialEndDate: string | null;
     };
-  }>
+  }>,
 ) {
   return (
     <span className={'flex items-center space-x-1.5 text-sm'}>
@@ -113,22 +114,16 @@ function RenewStatusDescription(
   );
 }
 
-function getProducts() {
-  return configuration.subscriptions.products;
-}
-
 function useSubscriptionDetails(variantId: number) {
-  const products = useMemo(() => getProducts(), []);
-
   return useMemo(() => {
-    for (const product of products) {
+    for (const product of configuration.subscriptions.products) {
       for (const plan of product.plans) {
         if (plan.variantId === variantId) {
           return { plan, product };
         }
       }
     }
-  }, [products, variantId]);
+  }, [variantId]);
 }
 
 export default SubscriptionCard;
