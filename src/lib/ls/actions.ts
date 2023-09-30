@@ -125,9 +125,7 @@ export async function createCustomerPortalSessionAction() {
   }
 
   // get the customer portal url
-  const response = await getLemonSqueezySubscription(
-    subscription.id.toString(),
-  );
+  const response = await getLemonSqueezySubscription(subscription.id);
 
   if (!response) {
     return redirectToErrorPage();
@@ -135,7 +133,16 @@ export async function createCustomerPortalSessionAction() {
 
   revalidatePath(path, 'page');
 
-  const url = response.data.attributes.urls.customer_portal;
+  /*
+  Adding a missing key to the response from the API
+  TODO: remove this when the API is updated to include the customer portal url
+   */
+  const url = (
+    response.data.attributes.urls as {
+      customer_portal: string;
+      update_payment_method: string;
+    }
+  ).customer_portal;
 
   // redirect user back based on the response
   return redirect(url, RedirectType.replace);

@@ -1,14 +1,9 @@
 import getLemonSqueezyClient from '~/lib/ls/lemon-squeezy-client';
-import type SubscriptionWebhookResponse from '~/lib/ls/types/subscription-webhook-response';
 
 export default async function getLemonSqueezySubscription(
-  subscriptionId: string,
+  subscriptionId: number,
 ) {
-  const client = getLemonSqueezyClient();
-  const path = `v1/subscriptions/${subscriptionId}`;
+  const client = await getLemonSqueezyClient();
 
-  return client.request<SubscriptionWebhookResponse>({
-    path,
-    method: 'GET',
-  });
+  return client.getSubscription({ id: subscriptionId });
 }

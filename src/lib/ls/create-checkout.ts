@@ -1,5 +1,4 @@
 import getClient from '~/lib/ls/lemon-squeezy-client';
-import CreateCheckoutResponse from '~/lib/ls/types/create-checkout-response';
 
 async function createLemonSqueezyCheckout(params: {
   organizationUid: string;
@@ -7,42 +6,22 @@ async function createLemonSqueezyCheckout(params: {
   storeId: number;
   returnUrl: string;
 }) {
-  const client = getClient();
-  const path = 'v1/checkouts';
+  const client = await getClient();
 
-  return client.request<CreateCheckoutResponse>({
-    path,
-    method: 'POST',
-    body: JSON.stringify({
-      data: {
-        type: 'checkouts',
-        attributes: {
-          checkout_data: {
-            custom: {
-              organization_id: params.organizationUid,
-            },
-          },
-          product_options: {
-            redirect_url: params.returnUrl,
-            enabled_variants: [params.variantId],
-          },
+  return client.createCheckout({
+    storeId: params.storeId,
+    variantId: params.variantId,
+    attributes: {
+      checkout_data: {
+        custom: {
+          organization_uid: params.organizationUid,
         },
-        relationships: {
-          store: {
-            data: {
-              type: 'stores',
-              id: params.storeId.toString(),
-            },
-          },
-          variant: {
-            data: {
-              type: 'variants',
-              id: params.variantId.toString(),
-            },
-          },
+        product_options: {
+          redirect_url: params.returnUrl,
+          enabled_variants: [params.variantId],
         },
       },
-    }),
+    },
   });
 }
 
