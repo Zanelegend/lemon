@@ -1,7 +1,6 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
 import { z } from 'zod';
@@ -18,7 +17,6 @@ import {
 import getLogger from '~/core/logger';
 import { withSession } from '~/core/generic/actions-utils';
 import getSupabaseServerActionClient from '~/core/supabase/action-client';
-import { createOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
 import { getOrganizationById } from '~/lib/organizations/database/queries';
 
 import configuration from '~/configuration';
@@ -127,16 +125,6 @@ export const acceptInviteAction = async (params: {
     throw organizationResponse.error;
   }
 
-  // we set the organization ID cookie
-  const organizationUid = organizationResponse.data.uuid;
-
-  cookies().set(
-    createOrganizationIdCookie({
-      userId,
-      organizationUid,
-    }),
-  );
-
   const needsEmailVerification =
     configuration.auth.requireEmailConfirmation && !signedIn;
 
@@ -150,7 +138,7 @@ export const acceptInviteAction = async (params: {
       `Redirecting user to app home...`,
     );
 
-    return redirect(configuration.paths.appHome);
+    redirect(configuration.paths.appHome);
   }
 
   logger.info(
@@ -160,7 +148,10 @@ export const acceptInviteAction = async (params: {
     `User needs to verify their email address - returning JSON response...`,
   );
 
-  return needsEmailVerification;
+  return {
+    success: true,
+    needsEmailVerification,
+  };
 };
 
 async function handleRemoveMemberRequest(
