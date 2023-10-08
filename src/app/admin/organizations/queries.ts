@@ -39,14 +39,11 @@ export async function getOrganizations(
         data: subscription_id (
           id,
           status,
-          currency,
-          interval,
-          cancelAtPeriodEnd: cancel_at_period_end,
-          intervalCount: interval_count,
-          priceId: price_id,
+          billingAnchor: billing_anchor,
+          variantId: variant_id,
           createdAt: created_at,
-          periodStartsAt: period_starts_at,
-          periodEndsAt: period_ends_at,
+          endsAt: ends_at,
+          renewsAt: renews_at,
           trialStartsAt: trial_starts_at,
           trialEndsAt: trial_ends_at
         )
