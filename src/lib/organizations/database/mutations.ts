@@ -76,10 +76,10 @@ export async function setOrganizationSubscriptionData(
         organization_id: organizationId,
       },
       {
-        onConflict: 'customer_id',
+        onConflict: 'organization_id',
       },
     )
-    .match({ customer_id: customerId })
+    .match({ organization_id: organizationId })
     .throwOnError();
 }
 

@@ -14,7 +14,7 @@ async function createLemonSqueezyCheckout(params: {
     attributes: {
       checkout_data: {
         custom: {
-          organization_uid: params.organizationUid,
+          organization_id: params.organizationUid,
         },
       },
       product_options: {
