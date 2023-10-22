@@ -98,13 +98,11 @@ const configuration = {
             name: 'Monthly',
             price: '$29',
             variantId: 55483,
-            trialPeriodDays: 0,
           },
           {
             name: 'Yearly',
             price: '$200',
             variantId: 55482,
-            trialPeriodDays: 0,
           },
         ],
       },

@@ -1,7 +1,6 @@
 import { defineConfig } from 'cypress';
 import { execSync } from 'child_process';
 import { loadEnvConfig } from '@next/env';
-import configuration from '~/configuration';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 // load environment variables from .env
@@ -38,6 +37,9 @@ export default defineConfig({
         async confirmEmail(email: string) {
           return confirmUserEmail(email);
         },
+        async getInviteEmail(mailbox: string) {
+          return getInviteEmail(mailbox);
+        },
       });
 
       const env = getEnv();
@@ -56,8 +58,15 @@ export default defineConfig({
 });
 
 function getExcludeSpecPattern() {
+  const configuration = require('./src/configuration').default;
+  const enableStripeTests = process.env.ENABLE_STRIPE_TESTING === 'true';
   const enableThemeTests = configuration.enableThemeSwitcher;
+
   const excludePatterns = [];
+
+  if (!enableStripeTests || !configuration.stripe.embedded) {
+    excludePatterns.push('**/stripe/*');
+  }
 
   if (!enableThemeTests) {
     excludePatterns.push('**/theme.cy.ts');
@@ -85,6 +94,7 @@ function resetDb() {
 function getEnv() {
   const env = process.env;
 
+  const STRIPE_WEBHOOK_SECRET = env.STRIPE_WEBHOOK_SECRET;
   const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
   const SUPABASE_ANON_KEY = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -92,6 +102,7 @@ function getEnv() {
   const USER_PASSWORD = env.USER_PASSWORD;
 
   return {
+    STRIPE_WEBHOOK_SECRET,
     SUPABASE_URL,
     SUPABASE_ANON_KEY,
     USER_EMAIL,
@@ -135,4 +146,23 @@ async function confirmUserEmail(email: string) {
     .catch(console.error);
 
   return true;
+}
+
+async function getInviteEmail(mailbox: string) {
+  const url = `http://localhost:54324/api/v1/mailbox/${mailbox}`;
+  const fetch = require('node-fetch');
+
+  const response = await fetch(url);
+  const json = await response.json();
+
+  if (!json) {
+    return;
+  }
+
+  const messageId = json[0].id;
+  const messageUrl = `${url}/${messageId}`;
+
+  const messageResponse = await fetch(messageUrl);
+
+  return messageResponse.json();
 }
