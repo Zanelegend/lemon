@@ -6,6 +6,9 @@ import AppContainer from './components/AppContainer';
 import { withI18n } from '~/i18n/with-i18n';
 import Spinner from '~/core/ui/Spinner';
 import Trans from '~/core/ui/Trans';
+import getSdk from '~/lib/sdk';
+
+import getSupabaseServerClient from '~/core/supabase/server-client';
 
 const DashboardDemo = loadDynamic(() => import('./components/DashboardDemo'), {
   ssr: false,
@@ -27,7 +30,18 @@ export const metadata = {
   title: 'Dashboard',
 };
 
-function DashboardPage() {
+async function DashboardPage() {
+  const supabase = getSupabaseServerClient();
+  const sdk = getSdk(supabase);
+
+  const user = await sdk.user.getCurrent();
+  const organization = await sdk.organization.getCurrent();
+  const subscription = await sdk.organization.getSubscription();
+  const isActive = await subscription.isActive();
+  const userData = await sdk.user.getData();
+
+  console.log(user, organization, isActive, userData);
+
   return (
     <>
       <AppHeader Icon={<Squares2X2Icon className={'h-6 dark:text-primary'} />}>
