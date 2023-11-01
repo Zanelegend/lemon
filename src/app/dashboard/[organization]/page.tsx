@@ -8,7 +8,7 @@ import Spinner from '~/core/ui/Spinner';
 import Trans from '~/core/ui/Trans';
 import getSdk from '~/lib/sdk';
 
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseServerClient from '~/core/supabase/server-component-client';
 
 const DashboardDemo = loadDynamic(() => import('./components/DashboardDemo'), {
   ssr: false,

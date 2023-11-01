@@ -15,7 +15,7 @@ import { canChangeBilling } from '~/lib/organizations/permissions';
 import createCheckout from '~/lib/ls/create-checkout';
 import getApiRefererPath from '~/core/generic/get-api-referer-path';
 import requireSession from '~/lib/user/require-session';
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseServerClient from '~/core/supabase/server-component-client';
 
 import { getUserMembershipByOrganization } from '~/lib/memberships/queries';
 

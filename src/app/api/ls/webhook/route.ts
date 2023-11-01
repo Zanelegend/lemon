@@ -19,7 +19,7 @@ import { buildOrganizationSubscription } from '~/lib/ls/build-organization-subsc
 import LemonSqueezyWebhooks from '~/lib/ls/types/webhooks.enum';
 
 import SubscriptionWebhookResponse from '~/lib/ls/types/subscription-webhook-response';
-import getSupabaseServerClient from '~/core/supabase/server-client';
+import getSupabaseServerClient from '~/core/supabase/server-component-client';
 import { setOrganizationSubscriptionData } from '~/lib/organizations/database/mutations';
 
 /**

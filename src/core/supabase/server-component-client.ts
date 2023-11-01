@@ -1,24 +1,17 @@
-import { cache } from 'react';
-import { cookies } from 'next/headers';
-
 import { createServerClient } from '@supabase/ssr';
-import type { Database } from '~/database.types';
+import { cookies } from 'next/headers';
+import { cache } from 'react';
 
-import getSupabaseClientKeys from './get-supabase-client-keys';
-import getSupabaseCookieAdapter from './supabase-cookie-adapter';
+import getSupabaseClientKeys from '~/core/supabase/get-supabase-client-keys';
+import { Database } from '~/database.types';
+import getSupabaseCookieAdapter from '~/core/supabase/supabase-cookie-adapter';
 
-const createServerSupabaseClient = cache(() => {
-  const keys = getSupabaseClientKeys();
-  const { get } = getCookiesStrategy();
-
-  return createServerClient<Database>(keys.url, keys.anonKey, {
-    cookies: {
-      get,
-    },
-  });
-});
-
-const getSupabaseServerActionClient = cache(
+/**
+ * @name getSupabaseServerComponentClient
+ * @description Get a Supabase client for use in the Server Components
+ * @param params
+ */
+const getSupabaseServerComponentClient = cache(
   (
     params = {
       admin: false,
@@ -41,9 +34,15 @@ const getSupabaseServerActionClient = cache(
       });
     }
 
-    return createServerSupabaseClient();
+    const { get } = getCookiesStrategy();
+
+    return createServerClient<Database>(keys.url, keys.anonKey, {
+      cookies: { get },
+    });
   },
 );
+
+export default getSupabaseServerComponentClient;
 
 function getCookiesStrategy() {
   const cookieStore = cookies();
@@ -60,5 +59,3 @@ function getCookiesStrategy() {
     },
   });
 }
-
-export default getSupabaseServerActionClient;

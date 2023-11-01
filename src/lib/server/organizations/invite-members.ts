@@ -92,7 +92,7 @@ export default async function inviteMembers(params: Params) {
       continue;
     }
 
-    let inviterDisplayName = inviter?.displayName ?? '';
+    let inviterDisplayName = inviter?.displayName || '';
 
     // when the inviter has no name in its record,
     // we fall back to their email

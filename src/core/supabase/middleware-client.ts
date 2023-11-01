@@ -1,59 +1,58 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
+import { Database } from '~/database.types';
+import getSupabaseCookieAdapter from './supabase-cookie-adapter';
+import getSupabaseClientKeys from './get-supabase-client-keys';
 
-import { NextRequest, NextResponse } from 'next/server';
-
-import invariant from 'tiny-invariant';
-import type { Database } from '~/database.types';
-
-/**
- * Get a Supabase client for use in the Middleware.
- * @param req
- * @param res
- * @param params
- */
-function getSupabaseMiddlewareClient(
-  req: NextRequest,
-  res: NextResponse,
-  params = {
-    admin: false,
-  }
+export default function createMiddlewareClient(
+  request: NextRequest,
+  response: NextResponse,
 ) {
-  const env = process.env;
+  const keys = getSupabaseClientKeys();
 
-  invariant(env.NEXT_PUBLIC_SUPABASE_URL, `Supabase URL not provided`);
-
-  invariant(
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    `Supabase Anon Key not provided`
-  );
-
-  if (params.admin) {
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    invariant(serviceRoleKey, `Supabase Service Role Key not provided`);
-
-    return createClient<Database>(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      serviceRoleKey,
-      {
-        auth: {
-          persistSession: false,
-        },
-      }
-    );
-  }
-
-  return createMiddlewareClient<Database>(
-    {
-      req,
-      res,
-    },
-    {
-      supabaseUrl: env.NEXT_PUBLIC_SUPABASE_URL,
-      supabaseKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    }
-  );
+  return createServerClient<Database>(keys.url, keys.anonKey, {
+    cookies: getCookieStrategy(request, response),
+  });
 }
 
-export default getSupabaseMiddlewareClient;
+function getCookieStrategy(request: NextRequest, response: NextResponse) {
+  return getSupabaseCookieAdapter({
+    set: (name: string, value: string, options: CookieOptions) => {
+      request.cookies.set({ name, value, ...options });
+
+      response = NextResponse.next({
+        request: {
+          headers: request.headers,
+        },
+      });
+
+      response.cookies.set({
+        name,
+        value,
+        ...options,
+      });
+    },
+    get: (name: string) => {
+      return request.cookies.get(name)?.value;
+    },
+    remove: (name: string, options: CookieOptions) => {
+      request.cookies.set({
+        name,
+        value: '',
+        ...options,
+      });
+
+      response = NextResponse.next({
+        request: {
+          headers: request.headers,
+        },
+      });
+
+      response.cookies.set({
+        name,
+        value: '',
+        ...options,
+      });
+    },
+  });
+}
