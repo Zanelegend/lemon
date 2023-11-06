@@ -36,8 +36,18 @@ const configuration = {
   },
   production,
   environment: process.env.NEXT_PUBLIC_ENVIRONMENT,
-  enableThemeSwitcher: true,
   theme: Themes.Light,
+  features: {
+    enableThemeSwitcher: true,
+    enableAccountDeletion: getBoolean(
+      process.env.NEXT_PUBLIC_ENABLE_ACCOUNT_DELETION,
+      false,
+    ),
+    enableOrganizationDeletion: getBoolean(
+      process.env.NEXT_PUBLIC_ENABLE_ORGANIZATION_DELETION,
+      false,
+    ),
+  },
   paths: {
     signIn: '/auth/sign-in',
     signUp: '/auth/sign-up',
@@ -132,3 +142,11 @@ const configuration = {
 };
 
 export default configuration;
+
+function getBoolean(value: unknown, defaultValue: boolean) {
+  if (typeof value === 'string') {
+    return value === 'true';
+  }
+
+  return defaultValue;
+}
