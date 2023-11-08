@@ -27,6 +27,7 @@ import Badge from '~/core/ui/Badge';
 import Label from '~/core/ui/Label';
 
 import configuration from '~/configuration';
+import MembershipRole from '~/lib/organizations/types/membership-role';
 
 interface Params {
   params: {
@@ -41,11 +42,13 @@ export const metadata = {
 function AdminUserPage({ params }: Params) {
   const uid = params.uid;
 
-  const { auth, user, organizations } = use(loadData(uid));
+  const data = use(loadData(uid));
+  const { auth, user } = data;
   const displayName = user?.displayName;
   const authUser = auth?.user;
   const email = authUser?.email;
   const phone = authUser?.phone;
+  const organizations = data.organizations ?? [];
 
   const isBanned = Boolean(
     authUser && 'banned_until' in authUser && authUser.banned_until !== 'none',
@@ -125,12 +128,21 @@ function AdminUserPage({ params }: Params) {
                   <TableHead>Role</TableHead>
                 </TableRow>
               </TableHeader>
+
               <TableBody>
-                {organizations?.map((membership: any) => {
+                {organizations.map((membership) => {
+                  const organization = membership.organization;
+                  const href = `/admin/organizations/${organization.id}/members`;
+
                   return (
                     <TableRow key={membership.id}>
-                      <TableCell>{membership.organization.id}</TableCell>
-                      <TableCell>{membership.organization.name}</TableCell>
+                      <TableCell>{organization.id}</TableCell>
+
+                      <TableCell>
+                        <Link className={'hover:underline'} href={href}>
+                          {organization.name}
+                        </Link>
+                      </TableCell>
 
                       <TableCell>
                         <div className={'inline-flex'}>
@@ -170,12 +182,22 @@ async function loadData(uid: string) {
 
   const organizationsQuery = client
     .from('memberships')
-    .select(
+    .select<
+      string,
+      {
+        id: number;
+        role: MembershipRole;
+        organization: { id: string; name: string };
+      }
+    >(
       `
-      id,
-      organization: organization_id !inner (id, name),
-      role
-  `,
+        id,
+        role,
+        organization: organization_id !inner (
+          id, 
+          name
+        )
+    `,
     )
     .eq('user_id', uid);
 

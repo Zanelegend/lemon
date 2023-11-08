@@ -39,7 +39,10 @@ function UserActionsDropdown({
 
         <If condition={!isBanned}>
           <DropdownMenuItem asChild>
-            <Link className={'text-red-500'} href={`/admin/users/${uid}/ban`}>
+            <Link
+              className={'text-orange-500'}
+              href={`/admin/users/${uid}/ban`}
+            >
               Ban
             </Link>
           </DropdownMenuItem>
@@ -50,6 +53,12 @@ function UserActionsDropdown({
             <Link href={`/admin/users/${uid}/reactivate`}>Reactivate</Link>
           </DropdownMenuItem>
         </If>
+
+        <DropdownMenuItem asChild>
+          <Link className={'text-red-500'} href={`/admin/users/${uid}/delete`}>
+            Delete
+          </Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

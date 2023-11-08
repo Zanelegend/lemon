@@ -1,4 +1,4 @@
-import type { Provider } from '@supabase/gotrue-js/src/lib/types';
+import type { Provider } from '@supabase/gotrue-js';
 
 const production = process.env.NODE_ENV === 'production';
 

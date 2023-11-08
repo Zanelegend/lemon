@@ -6,7 +6,7 @@ import type { User } from '@supabase/gotrue-js';
 
 import Modal from '~/core/ui/Modal';
 import Button from '~/core/ui/Button';
-import { reactivateUser } from '~/app/admin/users/@modal/[uid]/actions';
+import { reactivateUser } from '~/app/admin/users/@modal/[uid]/actions.server';
 import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 function ReactivateUserModal({

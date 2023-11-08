@@ -8,7 +8,7 @@ import Modal from '~/core/ui/Modal';
 import Button from '~/core/ui/Button';
 import If from '~/core/ui/If';
 
-import { impersonateUser } from '~/app/admin/users/@modal/[uid]/actions';
+import { impersonateUser } from '~/app/admin/users/@modal/[uid]/actions.server';
 import useCsrfToken from '~/core/hooks/use-csrf-token';
 
 import ImpersonateUserAuthSetter from '../components/ImpersonateUserAuthSetter';
