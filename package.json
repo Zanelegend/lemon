@@ -57,7 +57,7 @@
     "date-fns": "^2.30.0",
     "edge-csrf": "^1.0.6",
     "heroicons": "^2.0.18",
-    "i18next": "^23.7.1",
+    "i18next": "23.7.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-http-backend": "^2.3.2",
     "i18next-resources-to-backend": "^1.1.4",
