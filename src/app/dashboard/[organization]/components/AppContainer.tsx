@@ -1,7 +1,8 @@
-function AppContainer(props: React.PropsWithChildren) {
-  return (
-    <div className={'w-full p-3 flex flex-col flex-1'}>{props.children}</div>
-  );
-}
+import { PageBody } from '~/core/ui/Page';
+
+/**
+ * @deprecated Use PageBody instead
+ */
+const AppContainer = PageBody;
 
 export default AppContainer;

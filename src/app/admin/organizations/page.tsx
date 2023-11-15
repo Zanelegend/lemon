@@ -1,4 +1,3 @@
-import AppContainer from '~/app/dashboard/[organization]/components/AppContainer';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import AdminGuard from '~/app/admin/components/AdminGuard';
 import OrganizationsTable from '~/app/admin/organizations/components/OrganizationsTable';
@@ -6,6 +5,8 @@ import { getOrganizations } from '~/app/admin/organizations/queries';
 import getPageFromQueryParams from '~/app/admin/utils/get-page-from-query-param';
 
 import { TextFieldInput } from '~/core/ui/TextField';
+import { PageBody } from '~/core/ui/Page';
+
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 
 import configuration from '~/configuration';
@@ -36,7 +37,7 @@ async function OrganizationsAdminPage({
     <div className={'flex flex-1 flex-col'}>
       <AdminHeader>Manage Organizations</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <div className={'flex flex-col space-y-4'}>
           <form method={'GET'}>
             <TextFieldInput
@@ -53,7 +54,7 @@ async function OrganizationsAdminPage({
             organizations={organizations}
           />
         </div>
-      </AppContainer>
+      </PageBody>
     </div>
   );
 }

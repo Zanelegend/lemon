@@ -1,6 +1,5 @@
 import { use } from 'react';
 
-import AppContainer from '~/app/dashboard/[organization]/components/AppContainer';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import AdminGuard from '~/app/admin/components/AdminGuard';
@@ -8,6 +7,7 @@ import UsersTable from '~/app/admin/users/components/UsersTable';
 import { getUsers } from '~/app/admin/users/queries';
 import UserData from '~/core/session/types/user-data';
 import getPageFromQueryParams from '~/app/admin/utils/get-page-from-query-param';
+import { PageBody } from '~/core/ui/Page';
 import configuration from '~/configuration';
 
 interface UsersAdminPageProps {
@@ -30,14 +30,14 @@ function UsersAdminPage({ searchParams }: UsersAdminPageProps) {
     <div className={'flex flex-1 flex-col'}>
       <AdminHeader>Users</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <UsersTable
           users={users}
           page={page}
           pageCount={pageCount}
           perPage={perPage}
         />
-      </AppContainer>
+      </PageBody>
     </div>
   );
 }

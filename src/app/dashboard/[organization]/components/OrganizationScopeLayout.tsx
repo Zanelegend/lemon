@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import useCollapsible from '~/core/hooks/use-sidebar-state';
 import AppSidebar from '~/app/dashboard/[organization]/components/AppSidebar';
@@ -19,8 +19,9 @@ import I18nProvider from '~/i18n/I18nProvider';
 import { setCookie } from '~/core/generic/cookies';
 import AuthChangeListener from '~/components/AuthChangeListener';
 import type loadAppData from '~/lib/server/loaders/load-app-data';
+import { Page } from '~/core/ui/Page';
 
-const RouteShell: React.FCC<{
+const OrganizationScopeLayout: React.FCC<{
   data: Awaited<ReturnType<typeof loadAppData>>;
 }> = ({ data, children }) => {
   const userSessionContext: UserSession = useMemo(() => {
@@ -87,7 +88,7 @@ const RouteShell: React.FCC<{
   );
 };
 
-export default RouteShell;
+export default OrganizationScopeLayout;
 
 function RouteShellWithSidebar(
   props: React.PropsWithChildren<{
@@ -98,20 +99,10 @@ function RouteShellWithSidebar(
   const [collapsed, setCollapsed] = useCollapsible(props.collapsed);
 
   return (
-    <div className={'flex overflow-hidden'}>
-      <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
-        <div className={'hidden lg:block'}>
-          <AppSidebar organizationUid={props.organization} />
-        </div>
-
-        <div
-          className={
-            'relative mx-auto flex flex-col h-screen w-full overflow-y-auto'
-          }
-        >
-          {props.children}
-        </div>
-      </SidebarContext.Provider>
-    </div>
+    <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
+      <Page sidebar={<AppSidebar organizationUid={props.organization} />}>
+        {props.children}
+      </Page>
+    </SidebarContext.Provider>
   );
 }

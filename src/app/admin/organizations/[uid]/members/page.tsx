@@ -2,7 +2,6 @@ import { use } from 'react';
 import Link from 'next/link';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import AppContainer from '~/app/dashboard/[organization]/components/AppContainer';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import { getMembershipsByOrganizationUid } from '~/app/admin/organizations/queries';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
@@ -10,6 +9,7 @@ import OrganizationsMembersTable from '~/app/admin/organizations/[uid]/members/c
 import getPageFromQueryParams from '~/app/admin/utils/get-page-from-query-param';
 
 import configuration from '~/configuration';
+import { PageBody } from '~/core/ui/Page';
 
 interface AdminMembersPageParams {
   params: {
@@ -41,7 +41,7 @@ function AdminMembersPage(params: AdminMembersPageParams) {
     <div className={'flex flex-col flex-1'}>
       <AdminHeader>Manage Members</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <div className={'flex flex-col space-y-4'}>
           <Breadcrumbs />
 
@@ -52,7 +52,7 @@ function AdminMembersPage(params: AdminMembersPageParams) {
             memberships={memberships}
           />
         </div>
-      </AppContainer>
+      </PageBody>
     </div>
   );
 }

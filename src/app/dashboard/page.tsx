@@ -8,19 +8,18 @@ import getSupabaseServerComponentClient from '~/core/supabase/server-component-c
 import requireSession from '~/lib/user/require-session';
 import initializeServerI18n from '~/i18n/i18n.server';
 import getLanguageCookie from '~/i18n/get-language-cookie';
-import AppContainer from '~/app/dashboard/[organization]/components/AppContainer';
 import getCurrentOrganization from '~/lib/server/organizations/get-current-organization';
 import { parseOrganizationIdCookie } from '~/lib/server/cookies/organization.cookie';
+import NewOrganizationButtonContainer from './components/NewOrganizationButtonContainer';
 
 import LogoImage from '~/core/ui/Logo/LogoImage';
 import Container from '~/core/ui/Container';
 import If from '~/core/ui/If';
-import Heading from '~/core/ui/Heading';
 import CardButton from '~/core/ui/CardButton';
 import Trans from '~/core/ui/Trans';
+import { PageBody, PageHeader } from '~/core/ui/Page';
 
 import configuration from '~/configuration';
-import NewOrganizationButtonContainer from './components/NewOrganizationButtonContainer';
 import I18nProvider from '~/i18n/I18nProvider';
 import { getUserById } from '~/lib/user/database/queries';
 
@@ -73,7 +72,7 @@ async function OrganizationsPage() {
       <div className={'flex flex-col space-y-8'}>
         <OrganizationsPageHeader />
 
-        <AppContainer>
+        <PageBody>
           <Container>
             <div
               className={
@@ -125,7 +124,7 @@ async function OrganizationsPage() {
               })}
             </div>
           </Container>
-        </AppContainer>
+        </PageBody>
       </div>
     </I18nProvider>
   );
@@ -135,31 +134,17 @@ export default OrganizationsPage;
 
 function OrganizationsPageHeader() {
   return (
-    <div className="flex flex-1 items-center justify-between border-b border-gray-50 p-4 dark:border-dark-700">
-      <div className={'flex w-full flex-1 justify-between'}>
-        <div
-          className={'flex items-center justify-between space-x-4 lg:space-x-0'}
-        >
-          <div
-            className={'flex items-center space-x-2 lg:space-x-4 xl:space-x-6'}
-          >
-            <LogoImage />
+    <PageHeader
+      title={
+        <div className={'flex space-x-4 items-center'}>
+          <LogoImage />
 
-            <Heading type={5}>
-              <span className={'flex items-center space-x-0.5 lg:space-x-2'}>
-                <span
-                  className={
-                    'lg:text-initial text-base font-medium dark:text-white'
-                  }
-                >
-                  <Trans i18nKey={'common:yourOrganizations'} />
-                </span>
-              </span>
-            </Heading>
-          </div>
+          <span>
+            <Trans i18nKey={'common:yourOrganizations'} />
+          </span>
         </div>
-      </div>
-    </div>
+      }
+    />
   );
 }
 

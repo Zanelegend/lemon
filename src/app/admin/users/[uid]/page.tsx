@@ -6,7 +6,6 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import AdminGuard from '~/app/admin/components/AdminGuard';
-import AppContainer from '~/app/dashboard/[organization]/components/AppContainer';
 import { TextFieldInput, TextFieldLabel } from '~/core/ui/TextField';
 import Heading from '~/core/ui/Heading';
 
@@ -19,12 +18,13 @@ import {
   TableRow,
 } from '~/core/ui/Table';
 
-import RoleBadge from '~/app/dashboard/[organization]/settings/organization/components/RoleBadge';
-import UserActionsDropdown from '~/app/admin/users/[uid]/components/UserActionsDropdown';
-
 import Tile from '~/core/ui/Tile';
 import Badge from '~/core/ui/Badge';
 import Label from '~/core/ui/Label';
+import { PageBody } from '~/core/ui/Page';
+
+import RoleBadge from '~/app/dashboard/[organization]/settings/organization/components/RoleBadge';
+import UserActionsDropdown from '~/app/admin/users/[uid]/components/UserActionsDropdown';
 
 import configuration from '~/configuration';
 import MembershipRole from '~/lib/organizations/types/membership-role';
@@ -58,7 +58,7 @@ function AdminUserPage({ params }: Params) {
     <div className={'flex flex-col flex-1'}>
       <AdminHeader>Manage User</AdminHeader>
 
-      <AppContainer>
+      <PageBody>
         <div className={'flex flex-col space-y-6'}>
           <div className={'flex justify-between'}>
             <Breadcrumbs displayName={displayName ?? email ?? ''} />
@@ -156,7 +156,7 @@ function AdminUserPage({ params }: Params) {
             </Table>
           </Tile>
         </div>
-      </AppContainer>
+      </PageBody>
     </div>
   );
 }

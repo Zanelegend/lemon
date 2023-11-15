@@ -28,12 +28,10 @@ export default function DashboardDemo() {
 
   return (
     <div className={'flex flex-col space-y-6 pb-36'}>
-      <UserGreetings />
-
       <div
         className={
-          'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3' +
-          ' xl:grid-cols-4'
+          'grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3' +
+          ' 2xl:grid-cols-4'
         }
       >
         <Tile>
@@ -165,22 +163,6 @@ export default function DashboardDemo() {
           </Tile.Body>
         </Tile>
       </div>
-    </div>
-  );
-}
-
-function UserGreetings() {
-  const user = useUserSession();
-  const userDisplayName =
-    user?.data?.displayName ?? user?.auth?.user.email ?? `Anonymous`;
-
-  return (
-    <div>
-      <Heading type={4}>Welcome Back, {userDisplayName}</Heading>
-
-      <p className={'text-gray-500 dark:text-gray-400'}>
-        <span>Here&apos;s what is happening in your SaaS</span>
-      </p>
     </div>
   );
 }

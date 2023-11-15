@@ -1,11 +1,12 @@
 import loadDynamic from 'next/dynamic';
-import { Squares2X2Icon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 import AppHeader from './components/AppHeader';
-import AppContainer from './components/AppContainer';
 import { withI18n } from '~/i18n/with-i18n';
 import Spinner from '~/core/ui/Spinner';
 import Trans from '~/core/ui/Trans';
+import Button from '~/core/ui/Button';
+import { PageBody } from '~/core/ui/Page';
 
 const DashboardDemo = loadDynamic(() => import('./components/DashboardDemo'), {
   ssr: false,
@@ -18,7 +19,9 @@ const DashboardDemo = loadDynamic(() => import('./components/DashboardDemo'), {
     >
       <Spinner className={'text-primary'} />
 
-      <div>Loading dashboard...</div>
+      <div>
+        <Trans i18nKey={'common:loading'} />
+      </div>
     </div>
   ),
 });
@@ -30,13 +33,20 @@ export const metadata = {
 async function DashboardPage() {
   return (
     <>
-      <AppHeader Icon={<Squares2X2Icon className={'h-6 dark:text-primary'} />}>
-        <Trans i18nKey={'common:dashboardTabLabel'} />
+      <AppHeader
+        title={<Trans i18nKey={'common:dashboardTabLabel'} />}
+        description={<Trans i18nKey={'common:dashboardTabDescription'} />}
+      >
+        <Button size={'sm'} variant={'outline'}>
+          <PlusCircleIcon className={'w-4 mr-2'} />
+
+          <span>Add Widget</span>
+        </Button>
       </AppHeader>
 
-      <AppContainer>
+      <PageBody>
         <DashboardDemo />
-      </AppContainer>
+      </PageBody>
     </>
   );
 }
