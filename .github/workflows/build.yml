@@ -98,7 +98,7 @@ jobs:
 
       - name: Start Supabase
         id: supabase-start
-        run: supabase start -x studio,migra,deno-relay,pgadmin-schema-diff,imgproxy
+        run: npm run supabase:start -- -x studio,migra,deno-relay,pgadmin-schema-diff,imgproxy
 
       - name: 🔎 Cypress
         if: steps.supabase-start.outputs.exit_code == 0
