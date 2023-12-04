@@ -69,6 +69,7 @@ const ProfileDropdown: React.FCC<{
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        aria-label="Open your profile menu"
         data-cy={'profile-dropdown-trigger'}
         className={classNames(
           'flex cursor-pointer focus:outline-none group items-center',

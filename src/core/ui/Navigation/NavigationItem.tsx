@@ -57,7 +57,7 @@ export default NavigationMenuItem;
 function getNavigationMenuItemClassBuilder() {
   return cva(
     [
-      `flex items-center justify-center font-medium lg:justify-start rounded-md text-sm transition colors transform active:translate-y-[2px]`,
+      `flex items-center justify-center font-medium lg:justify-start rounded-md text-sm transition colors transform [&>*]:active:translate-y-[2px]`,
       '[&>*]:p-1 [&>*]:lg:px-2.5 [&>*]:w-full [&>*]:h-full [&>*]:flex [&>*]:items-center',
     ],
     {
@@ -95,7 +95,7 @@ function getNavigationMenuItemClassBuilder() {
         {
           active: true,
           bordered: true,
-          className: `top-[0.4rem] border-b-[0.25rem] rounded-none border-primary bg-transparent pb-[0.8rem] text-primary-700 dark:text-white`,
+          className: `top-[0.4rem] border-b-[0.25rem] rounded-none border-primary bg-transparent pb-[0.55rem] text-primary-700 dark:text-white`,
         },
         // active - secondary
         {
