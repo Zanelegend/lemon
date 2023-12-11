@@ -28,16 +28,16 @@ variables and keys before deploying to production.
 
 Ensure you have the following installed:
 
-- Node.js (LTS, v20 may not work with some dependencies)
+- Node.js (LTS recommended)
 - Git
 - Docker
 
 ### Cloning the Repository
 
-Clone this repository and name it according to your preferences:
+Clone this repository and name it according to your preferences (in the example below, we use `your-saas`):
 
 ```
-git clone https://github.com/makerkit/next-supabase-saas-kit.git your-saas --depth=1
+git clone https://github.com/makerkit/next-supabase-saas-kit.git your-saas
 ```
 
 Move to the folder just cloned:
@@ -46,14 +46,10 @@ Move to the folder just cloned:
 cd your-saas
 ```
 
-Reinitialize Git and set this repository as your upstream fork, so you can
+Set this repository as your upstream fork, so you can
 pull updates when needed:
 
 ```
-rm -rf .git
-git init
-git add .
-git commit -am "Inital Commit"
 git remote add upstream https://github.com/makerkit/next-supabase-saas-kit
 ```
 
@@ -61,7 +57,7 @@ We recommend to watch to the repository, so you know when there's an update.
 To pull the latest updates, use:
 
 ```
-git pull upstream main --allow-unrelated-histories
+git pull upstream main
 ```
 
 In case we change the same files, you will need to resolve the conflicts.
@@ -88,23 +84,20 @@ npm run supabase:start
 **NB**: this does not run your remote Supabase project, but a local instance
 using Docker. This is useful for development and testing.
 
-For production,
-you will need to copy your remote instance keys, and push the database
-migrations to your remote instance.
+For production, you will need to copy your remote instance keys, and push 
+the database migrations to your remote instance.
 
-My recommendation is to use the local instance for development, and the
-production instance when you're ready to deploy. Please set up the local
-instance first before attempting to use the production instance.
+**Recommendation**: use the local instance for development, and the
+production instance **when you're ready to deploy**. Please set up the local
+instance first before attempting to use the production instance, so that you 
+can test your application locally and familiarise with the product.
 
 If you are planning to deploy Supabase to production right away, [please ensure you read this guide by Supabase first](https://supabase.com/docs/guides/cli/local-development#link-your-project).
 
 #### Adding the Supabase Keys to the Environment Variables
 
-If this is the first time you run this command, we will need to get the 
-Supabase keys and add them to our local environment variables configuration 
-file `.env.local`. The file does not exist because it's not supposed to be 
-pushed to the repository: please create it and add the environment variables 
-below.
+We add the default Supabase keys to the environment variables, so we can run 
+Supabase locally right away.
 
 When running the command, we will see a message like this:
 
@@ -124,8 +117,9 @@ Started supabase local development setup.
 service_role key: ****************************************************
 ```
 
-Now, we need to copy the `anon key` and `service_role key` values and add 
-them to the `.env.local` file:
+Only if the values above are different than the ones already setup in `.env.
+development` and `.env.test`, we need to copy the `anon key` and 
+`service_role key` values and add them to the `.env.local` file:
 
 ```
 NEXT_PUBLIC_SUPABASE_ANON_KEY=****************************************************
@@ -134,11 +128,15 @@ SUPABASE_SERVICE_ROLE_KEY=****************************************************
 
 #### Database types (optional)
 
-Now, generate the DB types with:
+We provide the default database types for TypeScript. If you want to 
+generate new types, you can do so with the following command:
 
 ```
 npm run typegen
 ```
+
+This is useful when you add/update new tables or columns to your database, 
+so that the Supabase client can provide you with the correct types.
 
 ### Next.js Server
 
@@ -172,21 +170,16 @@ password = testingpassword
 
 When signing up, Supabase sends an email confirmation to a testing account. You can access the InBucket testing emails [using the following link](http://localhost:54324/monitor), and can follow the links to complete the sign up process.
 
+InBucket is an SMTP testing service that Supabase uses to send emails.
+
 ### After Creating your Supabase Project
 
 Make sure to add the environment variables to the provider you're deploying.
 
 ### Running Tests
 
-Before running tests, add the required environment variables to your `.env.test` file:
-
-```
-SUPABASE_URL=http://localhost:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-```
-
-Retrieve the keys after starting the Supabase server and paste them in the `.env.test` file.
+To customize the testing environment, add the required environment variables to 
+your `.env.test` file.
 
 #### Running E2E Stripe Tests
 
@@ -195,7 +188,7 @@ To run the Stripe tests and enable Stripe in development mode, you need to:
 1. Enable the tests using the environment variable `ENABLE_STRIPE_TESTING` in
    `.env.test`
 2. Have Docker installed and running in your local machine to run the Stripe
-   Emulator
+   CLI
 3. Generate a webhook key and set the environment variable
    `STRIPE_WEBHOOK_SECRET` and the other required Stripe environment variables
 

@@ -20,15 +20,12 @@ import getSupabaseServerActionClient from '~/core/supabase/action-client';
 import { getOrganizationById } from '~/lib/organizations/database/queries';
 
 import configuration from '~/configuration';
+import { Database } from '~/database.types';
 
 const path = `/${configuration.paths.appHome}/[organization]/settings/organization/members`;
 
 export const updateMemberAction = withSession(
-  async (params: {
-    membershipId: number;
-    role: MembershipRole;
-    csrfToken: string;
-  }) => {
+  async (params: { membershipId: number; role: MembershipRole }) => {
     const client = getSupabaseServerActionClient();
 
     await handleUpdateMemberRequest(client, params);
@@ -43,7 +40,7 @@ export const updateMemberAction = withSession(
 );
 
 export const deleteMemberAction = withSession(
-  async (params: { membershipId: number; csrfToken: string }) => {
+  async (params: { membershipId: number }) => {
     const client = getSupabaseServerActionClient();
 
     await handleRemoveMemberRequest(client, params.membershipId);
@@ -59,7 +56,6 @@ export const deleteMemberAction = withSession(
 
 export const acceptInviteAction = async (params: {
   code: string;
-  csrfToken: string;
   userId?: string;
 }) => {
   const code = params.code;
@@ -155,7 +151,7 @@ export const acceptInviteAction = async (params: {
 };
 
 async function handleRemoveMemberRequest(
-  client: SupabaseClient,
+  client: SupabaseClient<Database>,
   membershipId: number,
 ) {
   const logger = getLogger();
@@ -167,7 +163,19 @@ async function handleRemoveMemberRequest(
     `Removing member...`,
   );
 
-  await deleteMembershipById(client, membershipId);
+  const { error } = await deleteMembershipById(client, membershipId);
+
+  if (error) {
+    logger.error(
+      {
+        membershipId,
+        error,
+      },
+      `Error removing member`,
+    );
+
+    throw new Error(`Error removing member`);
+  }
 
   logger.info(
     {
@@ -178,7 +186,7 @@ async function handleRemoveMemberRequest(
 }
 
 async function handleUpdateMemberRequest(
-  client: SupabaseClient,
+  client: SupabaseClient<Database>,
   params: {
     membershipId: number;
     role: MembershipRole;
@@ -195,10 +203,42 @@ async function handleUpdateMemberRequest(
     `Updating member...`,
   );
 
-  await updateMembershipById(client, {
+  const canUpdateUserRoleResponse = await client.rpc('can_update_user_role', {
+    membership_id: membershipId,
+  });
+
+  if (canUpdateUserRoleResponse.error || !canUpdateUserRoleResponse.data) {
+    logger.error(
+      {
+        membershipId,
+        error: canUpdateUserRoleResponse.error,
+      },
+      `Error checking if user can update role`,
+    );
+
+    throw new Error(`Error checking if user can update role`);
+  }
+
+  // we use the Admin client to update the membership
+  // as we have no RLS policies on the memberships table to update the role
+  const adminClient = getSupabaseServerActionClient({ admin: true });
+
+  const { error } = await updateMembershipById(adminClient, {
     id: membershipId,
     role,
   });
+
+  if (error) {
+    logger.error(
+      {
+        membershipId,
+        error,
+      },
+      `Error updating member`,
+    );
+
+    throw new Error(`Error updating member`);
+  }
 
   logger.info(
     {

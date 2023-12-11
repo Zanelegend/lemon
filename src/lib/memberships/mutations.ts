@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { MEMBERSHIPS_TABLE } from '~/lib/db-tables';
 import type Membership from '~/lib/organizations/types/membership';
 import type { Database } from '../../database.types';
+import MembershipRole from '~/lib/organizations/types/membership-role';
 
 type Client = SupabaseClient<Database>;
 
@@ -16,7 +17,7 @@ export async function acceptInviteToOrganization(
   params: {
     code: string;
     userId: string;
-  }
+  },
 ) {
   return client
     .rpc('accept_invite_to_organization', {
@@ -29,16 +30,20 @@ export async function acceptInviteToOrganization(
 /**
  * @name createOrganizationMembership
  * @description Mutation to create a new membership record for a user within an organization.
- * @param client
+ * @param adminClient
  * @param membership
  */
 export async function createOrganizationMembership(
-  client: Client,
-  membership: Partial<Membership>
+  adminClient: Client,
+  membership: Partial<Membership>,
 ) {
-  const code = nanoid(16);
+  const code = nanoid(36);
 
-  return getMembershipsTable(client)
+  if (membership.role === MembershipRole.Owner) {
+    throw new Error('Cannot create an owner membership');
+  }
+
+  return getMembershipsTable(adminClient)
     .insert({
       role: membership.role,
       organization_id: membership.organizationId,
@@ -58,7 +63,7 @@ export async function createOrganizationMembership(
  */
 export async function updateMembershipById(
   client: Client,
-  membership: Partial<Membership> & { id: number }
+  membership: Partial<Membership> & { id: number },
 ) {
   const { id, ...params } = membership;
 
@@ -75,7 +80,7 @@ export async function updateMembershipById(
  */
 export async function deleteMembershipById(
   client: Client,
-  membershipId: number
+  membershipId: number,
 ) {
   return client
     .from(MEMBERSHIPS_TABLE)
@@ -95,7 +100,7 @@ export async function transferOwnership(
   params: {
     organizationId: number;
     targetUserMembershipId: number;
-  }
+  },
 ) {
   return client.rpc('transfer_organization', {
     org_id: params.organizationId,

@@ -195,7 +195,6 @@ function getCreateCheckoutBodySchema() {
     organizationUid: z.string().uuid(),
     variantId: z.coerce.number().min(1),
     returnUrl: z.string().min(1),
-    csrf_token: z.string().min(1),
   });
 }
 

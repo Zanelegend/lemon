@@ -1,6 +1,7 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import Image from 'next/image';
 import { useParams, usePathname, useRouter } from 'next/navigation';
+import classNames from 'clsx';
 
 import {
   EllipsisVerticalIcon,
@@ -25,17 +26,17 @@ import {
 
 import If from '~/core/ui/If';
 import Trans from '~/core/ui/Trans';
+import { Avatar, AvatarFallback } from '~/core/ui/Avatar';
 
 import UserSessionContext from '~/core/session/contexts/user-session';
 import CreateOrganizationModal from './CreateOrganizationModal';
 import type MembershipRole from '~/lib/organizations/types/membership-role';
 import useCurrentOrganization from '~/lib/organizations/hooks/use-current-organization';
 import configuration from '~/configuration';
-import { Avatar, AvatarFallback } from '~/core/ui/Avatar';
-import classNames from 'clsx';
 
 const OrganizationsSelector = ({ displayName = true }) => {
   const changeOrganization = useChangeOrganization();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const organization = useCurrentOrganization();
   const { userSession } = useContext(UserSessionContext);
@@ -102,25 +103,27 @@ const OrganizationsSelector = ({ displayName = true }) => {
           <SelectSeparator />
 
           <SelectGroup>
-            <CreateOrganizationModal
-              Trigger={
-                <SelectAction
-                  data-cy={'create-organization-button'}
-                  className={'flex flex-row items-center space-x-2 truncate'}
-                >
-                  <PlusCircleIcon className={'h-5'} />
+            <SelectAction
+              data-cy={'create-organization-button'}
+              className={'flex flex-row items-center space-x-2 truncate'}
+              onClick={() => setIsModalOpen(true)}
+            >
+              <PlusCircleIcon className={'h-5'} />
 
-                  <span>
-                    <Trans
-                      i18nKey={'organization:createOrganizationDropdownLabel'}
-                    />
-                  </span>
-                </SelectAction>
-              }
-            />
+              <span>
+                <Trans
+                  i18nKey={'organization:createOrganizationDropdownLabel'}
+                />
+              </span>
+            </SelectAction>
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      <CreateOrganizationModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+      />
     </>
   );
 };

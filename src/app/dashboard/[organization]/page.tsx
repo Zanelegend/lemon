@@ -13,8 +13,7 @@ const DashboardDemo = loadDynamic(() => import('./components/DashboardDemo'), {
   loading: () => (
     <div
       className={
-        'flex flex-1 items-center min-h-full justify-center flex-col' +
-        ' space-y-4'
+        'flex flex-1 items-center h-full justify-center flex-col space-y-4'
       }
     >
       <Spinner className={'text-primary'} />

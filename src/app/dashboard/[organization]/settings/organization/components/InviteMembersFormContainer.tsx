@@ -6,13 +6,13 @@ import { toast } from 'sonner';
 
 import useUserSession from '~/core/hooks/use-user-session';
 import { inviteMembersToOrganizationAction } from '~/lib/organizations/actions';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 import useCurrentOrganization from '~/lib/organizations/hooks/use-current-organization';
 import MembershipRole from '~/lib/organizations/types/membership-role';
+import InviteMembersForm from './InviteMembersForm';
+
 import Button from '~/core/ui/Button';
 import If from '~/core/ui/If';
 import Trans from '~/core/ui/Trans';
-import InviteMembersForm from './InviteMembersForm';
 
 const InviteMembersFormContainer = () => {
   const { t } = useTranslation('organization');
@@ -20,7 +20,6 @@ const InviteMembersFormContainer = () => {
   const organization = useCurrentOrganization();
 
   const [isSubmitting, startTransition] = useTransition();
-  const csrfToken = useCsrfToken();
 
   const onSubmit = useCallback(
     (
@@ -39,7 +38,6 @@ const InviteMembersFormContainer = () => {
         try {
           await inviteMembersToOrganizationAction({
             invites,
-            csrfToken,
             organizationUid: organization.uuid,
           });
 
@@ -53,7 +51,7 @@ const InviteMembersFormContainer = () => {
         }
       });
     },
-    [csrfToken, organization, t],
+    [organization, t],
   );
 
   const SubmitButton = (

@@ -30,12 +30,45 @@ insert into auth.users
   'test-update-password@makerkit.dev', '$2a$10$xTcejQ5rqsn2R3p9jx4XhO18/Gv844c38YhXLgle5sbbtruLcr.x2', '2022-12-15 19:24:42.345467+00',
   null, '', NULL, '', null, '', '', null, '2022-12-15 19:24:42.347755+00', '{"provider": "email", "providers": ["email"]}', '{}', null, '2022-12-15 19:24:42.341975+00', '2022-12-15 19:24:42.349475+00', null, null, '', '', null, default, '', 0, NULL, '', null);
 
-insert into auth.identities (id, provider, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
-    '059b89cf-0417-4692-abdf-cb065496ea4c', 'email', '059b89cf-0417-4692-abdf-cb065496ea4c', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+insert into auth.identities (id, provider, provider_id, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
+    '059b89cf-0417-4692-abdf-cb065496ea4c', 'email', 'email_01',
+    '059b89cf-0417-4692-abdf-cb065496ea4c', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
 );
 
-insert into auth.identities (id, provider, user_id, identity_data, last_sign_in_at, created_at, updated_at) values (
-    'e6058751-75dc-4831-b773-dd6e0c821963', 'email', 'e6058751-75dc-4831-b773-dd6e0c821963', '{}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    'e6058751-75dc-4831-b773-dd6e0c821963', 'email', 'email_02',
+    'e6058751-75dc-4831-b773-dd6e0c821963', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+);
+
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    '2b4a6624-7118-4551-8f0f-6b753e32e139', 'email', 'email_03',
+    '2b4a6624-7118-4551-8f0f-6b753e32e139', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+);
+
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    '34fac252-fd02-4bb9-bdf2-3492aab4e211', 'email', 'email_04',
+    '34fac252-fd02-4bb9-bdf2-3492aab4e211', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+);
+
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    '3dacd099-052e-461f-a17d-e62ed50a6c4e', 'email', 'email_05',
+    '3dacd099-052e-461f-a17d-e62ed50a6c4e', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+);
+
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    '337ad11f-42c1-4ab8-844d-961aa13d154b', 'email', 'email_06',
+    '337ad11f-42c1-4ab8-844d-961aa13d154b', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
+);
+
+insert into auth.identities (id, provider, provider_id, user_id,
+identity_data, last_sign_in_at, created_at, updated_at) values (
+    'b2e506f1-0ff6-43de-8437-67a870564ab2', 'email', 'email_07',
+    'b2e506f1-0ff6-43de-8437-67a870564ab2', '{"provider": "email", "providers": ["email"]}', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00', '2022-12-15 19:24:42.345467+00'
 );
 
 insert into public.users (id, display_name, photo_url, onboarded)

@@ -8,7 +8,6 @@ import Button from '~/core/ui/Button';
 
 import useSignOut from '~/core/hooks/use-sign-out';
 import useRefresh from '~/core/hooks/use-refresh';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 import { acceptInviteAction } from '~/lib/memberships/actions';
 
 function ExistingUserInviteForm(
@@ -20,7 +19,6 @@ function ExistingUserInviteForm(
   const signOut = useSignOut();
   const refresh = useRefresh();
   const [isSubmitting, startTransition] = useTransition();
-  const csrfToken = useCsrfToken();
 
   const onSignOut = useCallback(async () => {
     await signOut();
@@ -30,11 +28,10 @@ function ExistingUserInviteForm(
   const onInviteAccepted = useCallback(async () => {
     return startTransition(async () => {
       await acceptInviteAction({
-        csrfToken,
         code: props.code,
       });
     });
-  }, [props.code, csrfToken, startTransition]);
+  }, [props.code, startTransition]);
 
   return (
     <>

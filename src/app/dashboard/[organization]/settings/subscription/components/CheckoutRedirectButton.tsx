@@ -1,12 +1,10 @@
 'use client';
 
-import React from 'react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import classNames from 'clsx';
 
 import Button from '~/core/ui/Button';
 import isBrowser from '~/core/generic/is-browser';
-import useCsrfToken from '~/core/hooks/use-csrf-token';
 import { createCheckoutSessionAction } from '~/lib/ls/actions';
 
 const CheckoutRedirectButton: React.FCC<{
@@ -49,8 +47,6 @@ function CheckoutFormData(
     variantId: Maybe<number>;
   }>,
 ) {
-  const csrfToken = useCsrfToken();
-
   return (
     <>
       <input
@@ -59,7 +55,6 @@ function CheckoutFormData(
         defaultValue={props.organizationUid}
       />
 
-      <input type="hidden" name={'csrf_token'} defaultValue={csrfToken} />
       <input type="hidden" name={'returnUrl'} defaultValue={getReturnUrl()} />
       <input type="hidden" name={'variantId'} defaultValue={props.variantId} />
     </>
