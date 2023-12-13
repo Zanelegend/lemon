@@ -109,7 +109,9 @@ const ProfileDropdown: React.FCC<{
           <div
             className={'flex flex-col justify-start truncate text-left text-xs'}
           >
-            <div className={'text-gray-500'}>Signed in as</div>
+            <div className={'text-gray-500'}>
+              <Trans i18nKey={'common:signedInAs'} />
+            </div>
 
             <div>
               <span className={'block truncate'}>{signedInAsLabel}</span>
@@ -140,7 +142,9 @@ const ProfileDropdown: React.FCC<{
           >
             <QuestionMarkCircleIcon className={'h-5'} />
 
-            <span>Documentation</span>
+            <span>
+              <Trans i18nKey={'common:documentation'} />
+            </span>
           </Link>
         </DropdownMenuItem>
 

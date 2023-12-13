@@ -92,15 +92,14 @@ export async function POST(req: NextRequest) {
     }
 
     return respondOk();
-  } catch (e) {
+  } catch (error) {
     logger.error(
       {
         type: eventName,
+        error,
       },
       `[Lemon Squeezy] Webhook handling failed`,
     );
-
-    logger.error(e);
 
     return throwInternalServerErrorException();
   }
