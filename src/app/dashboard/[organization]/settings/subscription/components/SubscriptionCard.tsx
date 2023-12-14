@@ -24,11 +24,11 @@ const SubscriptionCard: React.FC<{
   const dates = useMemo(() => {
     return {
       endDate: subscription.endsAt
-        ? new Date(subscription.endsAt).toDateString()
+        ? new Date(subscription.endsAt).toLocaleDateString()
         : null,
-      renewDate: new Date(subscription.renewsAt).toDateString(),
+      renewDate: new Date(subscription.renewsAt).toLocaleDateString(),
       trialEndDate: subscription.trialEndsAt
-        ? new Date(subscription.trialEndsAt).toDateString()
+        ? new Date(subscription.trialEndsAt).toLocaleDateString()
         : null,
     };
   }, [subscription]);
