@@ -37,6 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/core/ui/Table';
+import Trans from '~/core/ui/Trans';
 
 interface ReactTableProps<T extends object> {
   data: T[];
@@ -204,12 +205,14 @@ function Pagination<T>({
         <ChevronDoubleRightIcon className={'h-4'} />
       </IconButton>
 
-      <span className="flex items-center gap-1 text-sm">
-        <div>Page</div>
-
-        <div>
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-        </div>
+      <span className="flex items-center text-sm">
+        <Trans
+          i18nKey={'common:pageOfPages'}
+          values={{
+            page: table.getState().pagination.pageIndex + 1,
+            total: table.getPageCount(),
+          }}
+        />
       </span>
     </div>
   );

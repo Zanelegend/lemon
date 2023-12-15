@@ -21,6 +21,7 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import IconButton from '~/core/ui/IconButton';
 import Badge from '~/core/ui/Badge';
 import If from '~/core/ui/If';
+import { getI18n } from 'react-i18next';
 
 type UserRow = {
   id: string;
@@ -99,10 +100,11 @@ const columns: Array<ColumnDef<UserRow>> = [
     id: 'createdAt',
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
+      const i18n = getI18n();
+      const language = i18n.language ?? 'en';
+      const createdAtLabel = date.toLocaleDateString(language);
 
-      return (
-        <span title={date.toLocaleString()}>{date.toLocaleDateString()}</span>
-      );
+      return <span>{createdAtLabel}</span>;
     },
   },
   {

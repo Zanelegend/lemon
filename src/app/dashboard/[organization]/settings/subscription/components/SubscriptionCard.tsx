@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { getI18n } from 'react-i18next';
 
 import type { OrganizationSubscription } from '~/lib/organizations/types/organization-subscription';
-
-import SubscriptionStatusBadge from '~/app/dashboard/[organization]/components/organizations/SubscriptionStatusBadge';
 
 import Heading from '~/core/ui/Heading';
 import If from '~/core/ui/If';
@@ -14,24 +13,27 @@ import SubscriptionStatusAlert from './SubscriptionStatusAlert';
 
 import configuration from '~/configuration';
 
+import SubscriptionStatusBadge from '~/app/dashboard/[organization]/components/organizations/SubscriptionStatusBadge';
+
 const SubscriptionCard: React.FC<{
   subscription: OrganizationSubscription;
 }> = ({ subscription }) => {
   const details = useSubscriptionDetails(subscription.variantId);
   const cancelAtPeriodEnd = subscription.cancelAtPeriodEnd;
   const isActive = subscription.status === 'active';
+  const language = useMemo(() => getI18n().language, []);
 
   const dates = useMemo(() => {
     return {
       endDate: subscription.endsAt
-        ? new Date(subscription.endsAt).toLocaleDateString()
+        ? new Date(subscription.endsAt).toLocaleDateString(language)
         : null,
-      renewDate: new Date(subscription.renewsAt).toLocaleDateString(),
+      renewDate: new Date(subscription.renewsAt).toLocaleDateString(language),
       trialEndDate: subscription.trialEndsAt
-        ? new Date(subscription.trialEndsAt).toLocaleDateString()
+        ? new Date(subscription.trialEndsAt).toLocaleDateString(language)
         : null,
     };
-  }, [subscription]);
+  }, [language, subscription]);
 
   if (!details) {
     return null;
