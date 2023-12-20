@@ -94,11 +94,15 @@ jobs:
       - name: Stop Supabase (if running)
         continue-on-error: true
         id: supabase-stop
-        run: supabase stop
+        run: supabase stop -- --no-backup
 
       - name: Start Supabase
         id: supabase-start
-        run: npm run supabase:start -- -x studio,migra,deno-relay,pgadmin-schema-diff,imgproxy
+        run: npm run supabase:start -- -x studio,migra,deno-relay,pgadmin-schema-diff,imgproxy,logflare
+
+      - name: Reset DB
+        if: steps.supabase-start.outputs.exit_code == 0
+        run: npm run supabase:db:reset
 
       - name: 🔎 Cypress
         if: steps.supabase-start.outputs.exit_code == 0
