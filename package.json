@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit",
-  "version": "0.10.8",
+  "version": "0.10.9",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -44,8 +44,8 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-email/components": "0.0.12",
-    "@sentry/node": "^7.90.0",
-    "@sentry/react": "^7.90.0",
+    "@sentry/node": "^7.91.0",
+    "@sentry/react": "^7.91.0",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.39.1",
     "@tanstack/react-table": "^8.11.2",
@@ -53,7 +53,7 @@
     "clsx": "^2.0.0",
     "contentlayer": "0.3.4",
     "cva": "npm:class-variance-authority@^0.7.0",
-    "date-fns": "^3.0.5",
+    "date-fns": "^3.0.6",
     "edge-csrf": "^1.0.7",
     "heroicons": "^2.1.1",
     "i18next": "23.7.11",
