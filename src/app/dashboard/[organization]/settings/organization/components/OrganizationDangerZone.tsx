@@ -93,13 +93,24 @@ function DeleteOrganizationForm({ name, id }: { name: string; id: number }) {
         action={deleteOrganizationAction}
       >
         <div className={'flex flex-col space-y-2'}>
-          <div>
-            <Trans
-              i18nKey={'organization:deleteOrganizationDisclaimer'}
-              values={{
-                organizationName: name,
-              }}
-            />
+          <div
+            className={
+              'border-2 border-red-500 p-4 text-sm text-red-500' +
+              ' flex flex-col space-y-2'
+            }
+          >
+            <div>
+              <Trans
+                i18nKey={'organization:deleteOrganizationDisclaimer'}
+                values={{
+                  organizationName: name,
+                }}
+              />
+            </div>
+
+            <div className={'text-sm'}>
+              <Trans i18nKey={'common:modalConfirmationQuestion'} />
+            </div>
           </div>
 
           <input type="hidden" value={id} name={'id'} />
