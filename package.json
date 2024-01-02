@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit",
-  "version": "0.10.10",
+  "version": "0.10.11",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -55,7 +55,7 @@
     "date-fns": "^3.0.6",
     "edge-csrf": "^1.0.7",
     "heroicons": "^2.1.1",
-    "i18next": "23.7.12",
+    "i18next": "23.7.13",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-http-backend": "^2.4.2",
     "i18next-resources-to-backend": "^1.2.0",
@@ -63,7 +63,7 @@
     "next": "14.0.4",
     "next-contentlayer": "0.3.4",
     "next-sitemap": "^4.2.3",
-    "nodemailer": "^6.9.7",
+    "nodemailer": "^6.9.8",
     "pino": "^8.17.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -99,7 +99,7 @@
     "postcss": "^8.4.32",
     "prettier": "3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.10",
-    "supabase": "^1.127.3",
+    "supabase": "^1.127.4",
     "tailwindcss": "^3.4.0",
     "typescript": "5.3.3"
   },
