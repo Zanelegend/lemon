@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit",
-  "version": "0.10.11",
+  "version": "0.10.12",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -47,15 +47,15 @@
     "@sentry/node": "^7.91.0",
     "@sentry/react": "^7.91.0",
     "@supabase/ssr": "^0.0.10",
-    "@supabase/supabase-js": "^2.39.1",
-    "@tanstack/react-table": "^8.11.2",
+    "@supabase/supabase-js": "^2.39.2",
+    "@tanstack/react-table": "^8.11.3",
     "clsx": "^2.1.0",
     "contentlayer": "0.3.4",
     "cva": "npm:class-variance-authority@^0.7.0",
     "date-fns": "^3.0.6",
     "edge-csrf": "^1.0.7",
     "heroicons": "^2.1.1",
-    "i18next": "23.7.13",
+    "i18next": "23.7.16",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-http-backend": "^2.4.2",
     "i18next-resources-to-backend": "^1.2.0",
@@ -82,7 +82,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/eslint": "^8.56.0",
+    "@types/eslint": "^8.56.1",
     "@types/i18next-fs-backend": "^1.1.5",
     "@types/node": "20.10.6",
     "@types/nodemailer": "^6.4.14",

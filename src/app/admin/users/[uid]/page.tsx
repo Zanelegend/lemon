@@ -1,4 +1,3 @@
-import { use } from 'react';
 import Link from 'next/link';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -39,10 +38,10 @@ export const metadata = {
   title: `Manage User | ${configuration.site.siteName}`,
 };
 
-function AdminUserPage({ params }: Params) {
+async function AdminUserPage({ params }: Params) {
   const uid = params.uid;
 
-  const data = use(loadData(uid));
+  const data = await loadData(uid);
   const { auth, user } = data;
   const displayName = user?.displayName;
   const authUser = auth?.user;
@@ -124,6 +123,7 @@ function AdminUserPage({ params }: Params) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Organization ID</TableHead>
+                  <TableHead>UUID</TableHead>
                   <TableHead>Organization</TableHead>
                   <TableHead>Role</TableHead>
                 </TableRow>
@@ -132,11 +132,12 @@ function AdminUserPage({ params }: Params) {
               <TableBody>
                 {organizations.map((membership) => {
                   const organization = membership.organization;
-                  const href = `/admin/organizations/${organization.id}/members`;
+                  const href = `/admin/organizations/${organization.uuid}/members`;
 
                   return (
                     <TableRow key={membership.id}>
                       <TableCell>{organization.id}</TableCell>
+                      <TableCell>{organization.uuid}</TableCell>
 
                       <TableCell>
                         <Link className={'hover:underline'} href={href}>
@@ -187,7 +188,11 @@ async function loadData(uid: string) {
       {
         id: number;
         role: MembershipRole;
-        organization: { id: string; name: string };
+        organization: {
+          id: number;
+          uuid: string;
+          name: string;
+        };
       }
     >(
       `
@@ -195,6 +200,7 @@ async function loadData(uid: string) {
         role,
         organization: organization_id !inner (
           id, 
+          uuid,
           name
         )
     `,
