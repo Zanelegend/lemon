@@ -96,9 +96,9 @@ export default function Home() {
             <Pill>A modern, scalable, and secure SaaS Starter Kit</Pill>
 
             <div className={'flex flex-col space-y-2.5'}>
-              <Heading type={1}>The best tool in the space</Heading>
+              <Heading type={2}>The best tool in the space</Heading>
 
-              <SubHeading>
+              <SubHeading as={'h3'}>
                 Unbeatable Features and Benefits for Your SaaS Business
               </SubHeading>
             </div>
@@ -111,7 +111,7 @@ export default function Home() {
                   <UserIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>Authentication</Heading>
+                <h4 className={'text-lg font-semibold'}>Authentication</h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Secure and Easy-to-Use Authentication for Your SaaS Website
@@ -123,7 +123,7 @@ export default function Home() {
                   <BuildingLibraryIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>Multi-Tenancy</Heading>
+                <h4 className={'text-lg font-semibold'}>Multi-Tenancy</h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Powerful Multi-Tenancy Features for Maximum Flexibility and
@@ -136,7 +136,7 @@ export default function Home() {
                   <UserGroupIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>Team-Management</Heading>
+                <h4 className={'text-lg font-semibold'}>Team-Management</h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Effortlessly Manage and Organize Your Team Members
@@ -148,7 +148,7 @@ export default function Home() {
                   <PaintBrushIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>UI Themes</Heading>
+                <h4 className={'text-lg font-semibold'}>UI Themes</h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Customizable UI Themes to Match Your Brand and Style
@@ -160,7 +160,7 @@ export default function Home() {
                   <CubeIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>UI Components</Heading>
+                <h4 className={'text-lg font-semibold'}>UI Components</h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Pre-built UI Components to Speed Up Your Development
@@ -172,7 +172,9 @@ export default function Home() {
                   <DocumentIcon className={'h-5'} />
                 </FeatureIcon>
 
-                <Heading type={4}>Blog and Documentation</Heading>
+                <h4 className={'text-lg font-semibold'}>
+                  Blog and Documentation
+                </h4>
 
                 <div className={'text-gray-500 dark:text-gray-400 text-sm'}>
                   Pre-built Blog and Documentation Pages to Help Your Users
@@ -188,9 +190,9 @@ export default function Home() {
           <FeatureShowcaseContainer>
             <LeftFeatureContainer>
               <div className={'flex flex-col space-y-4'}>
-                <Heading type={1}>Authentication</Heading>
+                <Heading type={2}>Authentication</Heading>
 
-                <SubHeading>
+                <SubHeading as={'h3'}>
                   Secure and Easy-to-Use Authentication for Your SaaS Website
                   and API
                 </SubHeading>
@@ -277,7 +279,7 @@ export default function Home() {
             </Pill>
 
             <div className={'flex flex-col space-y-2.5'}>
-              <Heading type={1}>
+              <Heading type={2}>
                 Ready to take your SaaS business to the next level?
               </Heading>
 
@@ -312,7 +314,12 @@ function HeroTitle({ children }: React.PropsWithChildren) {
 function FeatureIcon(props: React.PropsWithChildren) {
   return (
     <div className={'flex'}>
-      <div className={'rounded-lg bg-primary/10 p-3 dark:bg-primary/30'}>
+      <div
+        className={
+          'rounded-xl bg-primary/5 p-4 dark:bg-background border' +
+          ' border-primary/5 dark:border-dark-800'
+        }
+      >
         {props.children}
       </div>
     </div>
