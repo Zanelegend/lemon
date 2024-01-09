@@ -1,5 +1,3 @@
-import { use } from 'react';
-
 import AdminHeader from '~/app/admin/components/AdminHeader';
 import getSupabaseServerComponentClient from '~/core/supabase/server-component-client';
 import AdminGuard from '~/app/admin/components/AdminGuard';
@@ -20,10 +18,10 @@ export const metadata = {
   title: `Users | ${configuration.site.siteName}`,
 };
 
-function UsersAdminPage({ searchParams }: UsersAdminPageProps) {
+async function UsersAdminPage({ searchParams }: UsersAdminPageProps) {
   const page = getPageFromQueryParams(searchParams.page);
-  const perPage = 20;
-  const { users, total } = use(loadUsers(page, perPage));
+  const perPage = 1;
+  const { users, total } = await loadUsers(page, perPage);
   const pageCount = Math.ceil(total / perPage);
 
   return (
@@ -68,6 +66,7 @@ async function loadUsers(page = 1, perPage = 20) {
   const users = authUsers
     .map((user) => {
       const data = usersData.find((u) => u.id === user.id) as UserData;
+
       const banDuration =
         'banned_until' in user ? (user.banned_until as string) : 'none';
 

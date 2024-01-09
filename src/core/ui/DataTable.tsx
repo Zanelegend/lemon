@@ -94,6 +94,8 @@ function DataTable<T extends object>({
       rowSelection,
     },
     onPaginationChange: (updater) => {
+      const navigate = (page: number) => setTimeout(() => navigateToPage(page));
+
       if (typeof updater === 'function') {
         setPagination((prevState) => {
           const nextState = updater(prevState);
@@ -101,7 +103,7 @@ function DataTable<T extends object>({
           if (onPaginationChange) {
             onPaginationChange(nextState);
           } else {
-            navigateToPage(nextState.pageIndex);
+            navigate(nextState.pageIndex);
           }
 
           return nextState;
@@ -112,7 +114,7 @@ function DataTable<T extends object>({
         if (onPaginationChange) {
           onPaginationChange(updater);
         } else {
-          navigateToPage(updater.pageIndex);
+          navigate(updater.pageIndex);
         }
       }
     },
