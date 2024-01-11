@@ -1,13 +1,7 @@
-import * as Sentry from '@sentry/node';
-
-// Importing @sentry/tracing patches the global hub for tracing to work
-// Fore more info: https://docs.sentry.io/platforms/node/
-import '@sentry/tracing';
-
 import configuration from '~/configuration';
 import isBrowser from '~/core/generic/is-browser';
 
-export function initializeNodeSentry() {
+export async function initializeNodeSentry() {
   const dsn = configuration.sentry.dsn;
 
   if (!dsn) {
@@ -20,6 +14,8 @@ export function initializeNodeSentry() {
     return;
   }
 
+  const Sentry = await import('@sentry/node');
+
   Sentry.init({
     dsn,
     tracesSampleRate: 1.0,
@@ -29,12 +25,12 @@ export function initializeNodeSentry() {
 
 function warnSentryNotConfigured() {
   console.warn(
-    `Sentry DSN not provided. Please add a SENTRY_DSN environment variable to enable error tracking.`
+    `Sentry DSN not provided. Please add a SENTRY_DSN environment variable to enable error tracking.`,
   );
 }
 
 function warnNotNodeEnvironment() {
   console.warn(
-    `This Sentry instance is being initialized in a browser environment, but it's for Node. Please use 'initializeBrowserSentry' instead.`
+    `This Sentry instance is being initialized in a browser environment, but it's for Node. Please use 'initializeBrowserSentry' instead.`,
   );
 }

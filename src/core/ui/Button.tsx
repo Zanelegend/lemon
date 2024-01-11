@@ -137,3 +137,5 @@ function InnerButtonContainerElement({
 }
 
 export default Button;
+
+export { Button, buttonVariants };
