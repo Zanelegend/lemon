@@ -36,7 +36,6 @@ const IconButton = forwardRef(function IconButtonComponent(
     className: classNames(CLASSNAME, className),
     disabled: loading || disabled,
     'aria-label': label,
-    title: label,
     innerRef: ref,
   };
 
