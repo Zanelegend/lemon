@@ -100,9 +100,9 @@ jobs:
         id: supabase-start
         run: npm run supabase:start -- -x studio,migra,deno-relay,pgadmin-schema-diff,imgproxy,logflare
 
-      - name: Reset DB
+      - name: Test DB
         if: steps.supabase-start.outputs.exit_code == 0
-        run: npm run supabase:db:reset
+        run: npm run test:reset:db
 
       - name: 🔎 Cypress
         if: steps.supabase-start.outputs.exit_code == 0
