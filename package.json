@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit",
-  "version": "0.10.21",
+  "version": "0.10.24",
   "private": true,
   "sideEffects": false,
   "scripts": {
