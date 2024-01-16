@@ -97,19 +97,17 @@ language plpgsql;
 
 create or replace function makerkit.get_active_subscription(org_id bigint)
   returns table(
-    period_starts_at timestamptz,
-    period_ends_at timestamptz,
-    price_id text,
-    "interval" text
+    created_at timestamptz,
+    renews_at timestamptz,
+    variant_id bigint
   )
   as $$
 begin
   return query
   select
-    subscriptions.period_starts_at,
-    subscriptions.period_ends_at,
-    subscriptions.price_id,
-    subscriptions."interval"
+    subscriptions.created_at,
+    subscriptions.renews_at,
+    subscriptions.variant_id
   from
     subscriptions
     join organizations_subscriptions on subscriptions.id =
@@ -117,7 +115,7 @@ begin
   where
     organizations_subscriptions.organization_id = org_id
     and(subscriptions.status = 'active'
-      or subscriptions.status = 'trialing');
+      or subscriptions.status = 'on_trial');
 
 end;
 

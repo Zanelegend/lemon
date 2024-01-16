@@ -26,31 +26,30 @@ select
 set local role service_role;
 
 insert into subscriptions(
-  id,
-  price_id,
-  status,
-  cancel_at_period_end,
-  currency,
-  interval,
-  interval_count,
-  created_at,
-  period_starts_at,
-  period_ends_at,
-  trial_starts_at,
-  trial_ends_at)
-values (
-  'sub_123',
-  'price_123',
-  'active',
-  false,
-  'usd',
-  'month',
-  1,
-  now(),
-  now(),
-  now() + interval '1 month',
-  now(),
-  now() + interval '1 month');
+    id,
+    variant_id,
+    status,
+    cancel_at_period_end,
+    billing_anchor,
+    created_at,
+    ends_at,
+    renews_at,
+    trial_starts_at,
+    trial_ends_at,
+    update_payment_method_url
+) values (
+ 1,
+ 1,
+ 'active',
+ false,
+ 1,
+ now(),
+ now() + interval '1 year',
+ now() + interval '1 year',
+ now(),
+ now() + interval '1 year',
+ 'https://example.com'
+);
 
 insert into organizations_subscriptions(
   organization_id,
@@ -59,8 +58,8 @@ insert into organizations_subscriptions(
 values (
   makerkit.get_organization_id(
     'Organization'),
-  'sub_123',
-  'cus_123');
+  1,
+  1);
 
 select
   tests.authenticate_as('user');
@@ -78,7 +77,7 @@ select
     select
       1 from organizations_subscriptions
       where
-        subscription_id = 'sub_123';
+        subscription_id = 1;
 
 $$,
 'can get active subscription for organization');
@@ -99,7 +98,7 @@ select
     select
       1 from organizations_subscriptions
       where
-        subscription_id = 'sub_123';
+        subscription_id = 1;
 
 $$,
 'cannot get subscription for another organization');
@@ -110,12 +109,9 @@ select
 -- Test that a user can only create a subscription for their own organization
 select
   throws_ok($$ insert into subscriptions(
-      id, price_id, status, cancel_at_period_end, currency, interval,
-	interval_count, created_at, period_starts_at, period_ends_at)
-    values (
-      'sub_123', 'price_123', 'active', false,
-	'usd', 'month', 1, now(), now(), now() + interval
-	'1 month');
+      id, variant_id, status, cancel_at_period_end, billing_anchor, created_at,
+      ends_at)
+    values (1, 1, 'active', false, 1, now(), now() + interval '1 month');
 
 $$,
 'new row violates row-level security policy for table "subscriptions"');
@@ -125,7 +121,8 @@ select
       organization_id, subscription_id, customer_id)
     values (
       makerkit.get_organization_id(
-        'Organization 2'), 'sub_123', 'cus_123') $$, 'new row violates row-level security policy for table "organizations_subscriptions"');
+        'Organization 2'), 1, 1) $$, 'new row violates row-level ' ||
+                                             'security policy for table "organizations_subscriptions"');
 
 set local role postgres;
 

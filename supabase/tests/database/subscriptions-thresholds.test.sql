@@ -27,30 +27,29 @@ set local role postgres;
 
 insert into subscriptions(
   id,
-  price_id,
+  variant_id,
   status,
   cancel_at_period_end,
-  currency,
-  interval,
-  interval_count,
+  billing_anchor,
   created_at,
-  period_starts_at,
-  period_ends_at,
+  ends_at,
+  renews_at,
   trial_starts_at,
-  trial_ends_at)
-values (
-  'sub_123',
-  'price_123',
-  'active',
-  false,
-  'usd',
-  'month',
-  1,
-  now(),
-  now(),
-  now() + interval '1 month',
-  now(),
-  now() + interval '1 month');
+  trial_ends_at,
+  update_payment_method_url
+) values (
+    1,
+    1,
+    'active',
+    false,
+    1,
+    now(),
+    now() + interval '1 year',
+    now() + interval '1 year',
+    now(),
+    now() + interval '1 year',
+    'https://example.com'
+);
 
 insert into organizations_subscriptions(
   organization_id,
@@ -59,16 +58,16 @@ insert into organizations_subscriptions(
 values (
   makerkit.get_organization_id(
     'Organization'),
-  'sub_123',
-  'cus_123');
+  1,
+  1);
 
 create table plans(
   id serial primary key not null,
   name text not null,
-  price_id text not null,
+  variant_id bigint not null,
   max_projects integer not null,
   max_storage bigint not null, -- in GB
-  unique (price_id)
+  unique (variant_id)
 );
 
 create table projects(
@@ -80,26 +79,26 @@ create table projects(
 insert into plans(
   id,
   name,
-  price_id,
+  variant_id,
   max_projects,
   max_storage)
 values (
   1,
   'Free',
-  'price_123',
+  1,
   1,
   1);
 
 insert into plans(
   id,
   name,
-  price_id,
+  variant_id,
   max_projects,
   max_storage)
 values (
   2,
   'Pro',
-  'price_345',
+  2,
   5,
   5);
 
@@ -145,9 +144,9 @@ current_user_is_member_of_organization(
       from
         plans
       where
-        price_id =(
+        variant_id =(
           select
-            price_id
+            variant_id
           from
 	    makerkit.get_active_subscription(organization_id)))
 	      >(get_projects_count(organization_id)));
@@ -162,7 +161,6 @@ select
     values (
       'Project 1', makerkit.get_organization_id(
         'Organization'));
-
 $$,
 'can insert project');
 

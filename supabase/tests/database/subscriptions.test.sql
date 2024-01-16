@@ -22,9 +22,9 @@ set local role service_role;
 
 select
   (lives_ok($$ insert into subscriptions(
-        cancel_at_period_end, price_id, id, status)
+        cancel_at_period_end, variant_id, id, status)
       values (
-        true, '1', '1', 'incomplete');
+        true, 1, 1, 'on_trial');
 
 $$,
 'can insert a subscription as an admin'));
@@ -34,7 +34,7 @@ select
         organization_id, subscription_id, customer_id)
       values (
         makerkit.get_organization_id(
-          'Supabase'), '1', '1');
+          'Supabase'), 1, 1);
 
 $$,
 'can insert an organization subscription as an admin'));
@@ -44,9 +44,9 @@ select
 
 select
   (throws_ok($$ insert into subscriptions(
-        price_id, id, status)
+        variant_id, id, status)
       values (
-        '1', '1', 'active');
+        1, 1, 'active');
 
 $$,
 'new row violates row-level security policy for table "subscriptions"'));
@@ -56,7 +56,8 @@ select
     select
       * from subscriptions
       where
-        id = '1' $$, 'an user can read a subscription if it belongs to the same organization');
+        id = 1 $$, 'an user can read a subscription if it belongs to the same' ||
+                   ' organization');
 
 select
   isnt_empty($$
