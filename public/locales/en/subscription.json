@@ -6,29 +6,20 @@
   "notSubscribedToAnyPlan": "You are not currently subscribed to any plan",
   "choosePlan": "Select a plan below",
   "currentPlan": "Your Plan",
-  "subscriptionWillEndOn": "The subscription will end on {{ endDate }}",
+  "subscriptionWillEndOn": "The subscription will end on {{- endDate }}",
   "unknownErrorAlertHeading": "Sorry, something went wrong",
   "unknownErrorAlert": "We encountered an unknown error while processing your payment. Please try again or contact support.",
   "checkOutCanceledAlertHeading": "The checkout was canceled",
   "checkOutCanceledAlert": "The checkout was canceled. Please contact us if you're experiencing any issues.",
   "checkOutCompletedAlertHeading": "Checkout successfully completed",
   "checkOutCompletedAlert": "Yay, your payment went through!",
-  "cancelAtPeriodEndDescription": "Your subscription is scheduled to be canceled on {{ endDate }}.",
-  "renewAtPeriodEndDescription": "Your subscription is scheduled to be renewed on {{ renewDate }}",
+  "cancelAtPeriodEndDescription": "Your subscription is scheduled to be canceled on {{- endDate }}.",
+  "renewAtPeriodEndDescription": "Your subscription is scheduled to be renewed on {{- renewDate }}",
   "noPermissionsAlertHeading": "You don't have permissions to change the billing",
   "noPermissionsAlertBody": "Please contact your organization owner to change the billing settings for your organization.",
-  "updatePlanModalHeading": "Switch to a different plan",
-  "updatePlanModalSubheading": "Choose a plan that suits your needs.",
-  "switchPlan": "Switch Plan",
-  "switchToPlan": "Switch to plan",
-  "confirmSwitchPlan": "Click again to confirm",
-  "resumeSubscription": "Resume Subscription",
-  "resumeSubscriptionBody": "By resuming your subscription, you will regain your plan benefits",
-  "confirmResumeSubscription": " Yes, Resume Subscription",
-  "cancelSubscription": "Cancel Subscription",
-  "cancelSubscriptionBody": "By unsubscribing, you will lose your plan benefits",
-  "confirmCancelSubscription": " Yes, Cancel Subscription",
-  "updatePaymentMethod": "Update Payment Method",
+  "checkoutSuccessTitle": "Done! You're all set.",
+  "checkoutSuccessDescription": "Thank you for subscribing, we have successfully processed your subscription! A confirmation email will be sent to {{ customerEmail }}.",
+  "checkoutSuccessBackButton": "Proceed to App",
   "status": {
     "free": {
       "label": "Free Plan",
@@ -43,7 +34,7 @@
     "on_trial": {
       "label": "Trial",
       "heading": "You're on a trial",
-      "description": "Your trial will end on {{ trialEndDate }}."
+      "description": "Your trial will end on {{- trialEndDate }}."
     },
     "past_due": {
       "label": "Past Due",
@@ -53,7 +44,7 @@
     "cancelled": {
       "label": "Canceled",
       "heading": "Your subscription is canceled",
-      "description": "Your subscription is canceled. It is scheduled to end on {{ endDate }}."
+      "description": "Your subscription is canceled. It is scheduled to end on {{- endDate }}."
     },
     "unpaid": {
       "label": "Unpaid",
