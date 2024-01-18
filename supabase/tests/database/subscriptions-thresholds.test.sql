@@ -61,7 +61,7 @@ values (
   1,
   1);
 
-create table plans(
+create table _plans(
   id serial primary key not null,
   name text not null,
   variant_id bigint not null,
@@ -70,13 +70,13 @@ create table plans(
   unique (variant_id)
 );
 
-create table projects(
+create table _projects(
   id serial primary key not null,
   organization_id bigint not null references organizations(id),
   name text not null
 );
 
-insert into plans(
+insert into _plans(
   id,
   name,
   variant_id,
@@ -89,7 +89,7 @@ values (
   1,
   1);
 
-insert into plans(
+insert into _plans(
   id,
   name,
   variant_id,
@@ -102,9 +102,9 @@ values (
   5,
   5);
 
-alter table plans enable row level security;
+alter table _plans enable row level security;
 
-alter table projects enable row level security;
+alter table _projects enable row level security;
 
 create function get_projects_count(org_id bigint)
   returns integer
@@ -112,18 +112,18 @@ create function get_projects_count(org_id bigint)
   select
     count(*)
   from
-    projects
+    _projects
   where
-    projects.organization_id = org_id;
+      _projects.organization_id = org_id;
 $$
 language sql
 stable;
 
-create policy "Allow reading plans" on plans
+create policy "Allow reading plans" on _plans
   for select to authenticated
     using (true);
 
-create policy "Allow reading projects belonging to organization" on projects
+create policy "Allow reading projects belonging to organization" on _projects
   for select to authenticated
     using (current_user_is_member_of_organization(organization_id));
 
@@ -133,7 +133,7 @@ create policy "Allow reading projects belonging to organization" on projects
 -- 2. an active plan exists
 -- 3. the plan allows inserting projects
 -- 4. the user has not exceeded the number of projects allowed by the plan
-create policy "Allow inserting projects if plan allows it" on projects
+create policy "Allow inserting projects if plan allows it" on _projects
   for insert to authenticated
     with check (
 current_user_is_member_of_organization(
@@ -142,7 +142,7 @@ current_user_is_member_of_organization(
       select
         max_projects
       from
-        plans
+        _plans
       where
         variant_id =(
           select
@@ -156,7 +156,7 @@ select
 
 -- can insert 1 project on the free plan
 select
-  lives_ok($$ insert into projects(
+  lives_ok($$ insert into _projects(
       name, organization_id)
     values (
       'Project 1', makerkit.get_organization_id(
@@ -166,27 +166,27 @@ $$,
 
 -- cannot insert more than 1 project
 select
-  throws_ok($$ insert into projects(
+  throws_ok($$ insert into _projects(
       name, organization_id)
     values (
       'Project 1', makerkit.get_organization_id(
         'Organization'));
 
 $$,
-'new row violates row-level security policy for table "projects"');
+'new row violates row-level security policy for table "_projects"');
 
 select
   tests.authenticate_as('user-2');
 
 select
-  throws_ok($$ insert into projects(
+  throws_ok($$ insert into _projects(
       name, organization_id)
     values (
       'Project 2', makerkit.get_organization_id(
         'Organization'));
 
 $$,
-'new row violates row-level security policy for table "projects"');
+'new row violates row-level security policy for table "_projects"');
 
 select
   *
