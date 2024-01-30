@@ -7,7 +7,6 @@ import {
   EllipsisVerticalIcon,
   PlusCircleIcon,
 } from '@heroicons/react/24/outline';
-import { SelectArrow } from '@radix-ui/react-select';
 
 import type Organization from '~/lib/organizations/types/organization';
 import useUserOrganizationsQuery from '~/lib/organizations/hooks/use-user-organizations-query';
@@ -82,8 +81,6 @@ const OrganizationsSelector = ({ displayName = true }) => {
         </SelectTrigger>
 
         <SelectContent>
-          <SelectArrow />
-
           <SelectGroup>
             <SelectLabel>
               <Trans i18nKey={'common:yourOrganizations'} />
@@ -211,11 +208,8 @@ function useChangeOrganization() {
     (uuid: string) => {
       const appPrefix = configuration.paths.appPrefix;
       const organizationPath = `${appPrefix}/${uuid}`;
-      const route = path?.replace(`${appPrefix}/${params?.organization}`, '');
 
-      if (route !== undefined) {
-        router.push(`${organizationPath}/${route}`);
-      }
+      router.push(organizationPath);
     },
     [params?.organization, path, router],
   );
